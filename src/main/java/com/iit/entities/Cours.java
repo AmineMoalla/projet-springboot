@@ -38,8 +38,8 @@ public class Cours {
         joinColumns = @JoinColumn(name = "cours_code"),
         inverseJoinColumns = @JoinColumn(name = "etudiant_matricule")
     )*/
-    @ManyToMany(mappedBy="coursInscrits")
-    private List<Etudiant> etudiants = new ArrayList<>();
+    /*@ManyToMany(mappedBy="coursInscrits")
+    private List<Etudiant> etudiants = new ArrayList<>();*/
 
     // Constructeurs
 
@@ -86,13 +86,13 @@ public class Cours {
         this.formateur = formateur;
     }
 
-    public List<Etudiant> getEtudiants() {
+    /*public List<Etudiant> getEtudiants() {
         return etudiants;
     }
 
     public void setEtudiants(List<Etudiant> etudiants) {
         this.etudiants = etudiants;
-    }
+    }*/
 
     @Override
     public String toString() {

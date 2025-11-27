@@ -27,8 +27,8 @@ public class Etudiant {
     private LocalDate dateInscription;
 
     // Relation avec Cours (Many-to-Many)
-    @ManyToMany(mappedBy = "etudiants")
-    private List<Cours> coursInscrits = new ArrayList<Cours>();
+    /*@ManyToMany(mappedBy = "etudiants")
+    private List<Cours> coursInscrits = new ArrayList<Cours>();*/
     
     @OneToMany(mappedBy = "etudiant")
     private Collection<Inscription> inscriptions= new ArrayList<Inscription>();
@@ -90,13 +90,13 @@ public class Etudiant {
         this.dateInscription = dateInscription;
     }
 
-    public List<Cours> getCoursInscrits() {
+    /*public List<Cours> getCoursInscrits() {
         return coursInscrits;
     }
 
     public void setCoursInscrits(List<Cours> coursInscrits) {
         this.coursInscrits = coursInscrits;
-    }
+    }*/
 
     @Override
     public String toString() {
