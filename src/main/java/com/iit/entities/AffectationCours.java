@@ -24,6 +24,8 @@ public class AffectationCours {
 
 	private String semestre;
 	private Integer volumeHoraire;
+	
+
 
 	public AffectationCours() {
 	}
@@ -90,4 +92,10 @@ public class AffectationCours {
 	public void setVolumeHoraire(Integer volumeHoraire) {
 		this.volumeHoraire = volumeHoraire;
 	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
+	
 }
