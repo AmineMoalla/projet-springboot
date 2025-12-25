@@ -14,98 +14,95 @@ public class Etudiant {
 	@Id
 	@GeneratedValue
 	private Long id;
-	
+
 	@Column(unique = true)
-    private String matricule;
+	private String matricule;
 
-    private String nom;
-    private String prenom;
-    @Email
-    private String email;
+	private String nom;
+	private String prenom;
+	@Email
+	private String email;
 
-    @Column(name = "date_inscription")
-    private LocalDate dateInscription;
+	@Column(name = "date_inscription")
+	private LocalDate dateInscription;
 
-    // Relation avec Cours (Many-to-Many)
-    /*@ManyToMany(mappedBy = "etudiants")
-    private List<Cours> coursInscrits = new ArrayList<Cours>();*/
-    
-    @OneToMany(mappedBy = "etudiant")
-    private Collection<Inscription> inscriptions= new ArrayList<Inscription>();
-    
-    @OneToMany(mappedBy = "etudiant")
-    private Collection<Note>notes= new ArrayList<Note>();
+	// Relation avec Cours (Many-to-Many)
+	/*
+	 * @ManyToMany(mappedBy = "etudiants") private List<Cours> coursInscrits = new
+	 * ArrayList<Cours>();
+	 */
 
-    // ----- Constructeurs ----- //
+	@OneToMany(mappedBy = "etudiant")
+	private Collection<Inscription> inscriptions = new ArrayList<Inscription>();
 
-    public Etudiant() {}
+	@OneToMany(mappedBy = "etudiant")
+	private Collection<Note> notes = new ArrayList<Note>();
 
-    public Etudiant(String matricule, String nom, String prenom, String email, LocalDate dateInscription) {
-        this.matricule = matricule;
-        this.nom = nom;
-        this.prenom = prenom;
-        this.email = email;
-        this.dateInscription = dateInscription;
-    }
+	// ----- Constructeurs ----- //
 
-    // ----- Getters & Setters ----- //
+	public Etudiant() {
+	}
 
-    public String getMatricule() {
-        return matricule;
-    }
+	public Etudiant(String matricule, String nom, String prenom, String email, LocalDate dateInscription) {
+		this.matricule = matricule;
+		this.nom = nom;
+		this.prenom = prenom;
+		this.email = email;
+		this.dateInscription = dateInscription;
+	}
 
-    public void setMatricule(String matricule) {
-        this.matricule = matricule;
-    }
+	// ----- Getters & Setters ----- //
 
-    public String getNom() {
-        return nom;
-    }
+	public String getMatricule() {
+		return matricule;
+	}
 
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
+	public void setMatricule(String matricule) {
+		this.matricule = matricule;
+	}
 
-    public String getPrenom() {
-        return prenom;
-    }
+	public String getNom() {
+		return nom;
+	}
 
-    public void setPrenom(String prenom) {
-        this.prenom = prenom;
-    }
+	public void setNom(String nom) {
+		this.nom = nom;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public String getPrenom() {
+		return prenom;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public void setPrenom(String prenom) {
+		this.prenom = prenom;
+	}
 
-    public LocalDate getDateInscription() {
-        return dateInscription;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public void setDateInscription(LocalDate dateInscription) {
-        this.dateInscription = dateInscription;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    /*public List<Cours> getCoursInscrits() {
-        return coursInscrits;
-    }
+	public LocalDate getDateInscription() {
+		return dateInscription;
+	}
 
-    public void setCoursInscrits(List<Cours> coursInscrits) {
-        this.coursInscrits = coursInscrits;
-    }*/
+	public void setDateInscription(LocalDate dateInscription) {
+		this.dateInscription = dateInscription;
+	}
 
-    @Override
-    public String toString() {
-        return "Etudiant{" +
-                "matricule='" + matricule + '\'' +
-                ", nom='" + nom + '\'' +
-                ", prenom='" + prenom + '\'' +
-                ", email='" + email + '\'' +
-                ", dateInscription=" + dateInscription +
-                '}';
-    }
+	/*
+	 * public List<Cours> getCoursInscrits() { return coursInscrits; }
+	 * 
+	 * public void setCoursInscrits(List<Cours> coursInscrits) { this.coursInscrits
+	 * = coursInscrits; }
+	 */
+
+	@Override
+	public String toString() {
+		return "Etudiant{" + "matricule='" + matricule + '\'' + ", nom='" + nom + '\'' + ", prenom='" + prenom + '\''
+				+ ", email='" + email + '\'' + ", dateInscription=" + dateInscription + '}';
+	}
 }

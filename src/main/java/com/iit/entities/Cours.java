@@ -8,99 +8,63 @@ import java.util.List;
 @Entity
 public class Cours {
 
-    
-    @Id
-    @GeneratedValue
-    private Long id;
-    
-    @Column(unique=true)
-    private String code;
+	@Id
+	@GeneratedValue
+	private Long id;
 
-    private String titre;
-    private String description;
+	@Column(unique = true)
+	private String nom;
 
-    // Many-to-One vers Formateur
-    @ManyToOne
-   // @JoinColumn(name = "formateur_id")
-    private Formateur formateur;
-    
-    
-    @OneToMany(mappedBy = "cours")
-    private Collection<Inscription> inscriptions= new ArrayList<Inscription>();
-    
-    @OneToMany(mappedBy = "cours")
-    private Collection<Note>notes= new ArrayList<Note>();
 
-    // Many-to-Many vers Etudiants
-   
-    /*@JoinTable(
-        name = "cours_etudiants",
-        joinColumns = @JoinColumn(name = "cours_code"),
-        inverseJoinColumns = @JoinColumn(name = "etudiant_matricule")
-    )*/
-    /*@ManyToMany(mappedBy="coursInscrits")
-    private List<Etudiant> etudiants = new ArrayList<>();*/
+	@OneToMany(mappedBy = "cours")
+	private Collection<AffectationCours> affectations = new ArrayList<AffectationCours>();
 
-    // Constructeurs
+	@OneToMany(mappedBy = "cours")
+	private Collection<Note> notes = new ArrayList<Note>();
 
-    public Cours() {}
+	public Cours() {
+	}
 
-    public Cours(String code, String titre, String description, Formateur formateur) {
-        this.code = code;
-        this.titre = titre;
-        this.description = description;
-        this.formateur = formateur;
-    }
+	public Cours(String nom, Formateur formateur, Collection<AffectationCours> affectations, Collection<Note> notes) {
+		super();
+		this.nom = nom;
+		
+		this.affectations = affectations;
+		this.notes = notes;
+	}
 
-    // Getters & Setters
+	public Long getId() {
+		return id;
+	}
 
-    public String getCode() {
-        return code;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setCode(String code) {
-        this.code = code;
-    }
+	public String getNom() {
+		return nom;
+	}
 
-    public String getTitre() {
-        return titre;
-    }
+	public void setNom(String nom) {
+		this.nom = nom;
+	}
 
-    public void setTitre(String titre) {
-        this.titre = titre;
-    }
+	
 
-    public String getDescription() {
-        return description;
-    }
+	public Collection<AffectationCours> getAffectations() {
+		return affectations;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public void setAffectations(Collection<AffectationCours> affectations) {
+		this.affectations = affectations;
+	}
 
-    public Formateur getFormateur() {
-        return formateur;
-    }
+	public Collection<Note> getNotes() {
+		return notes;
+	}
 
-    public void setFormateur(Formateur formateur) {
-        this.formateur = formateur;
-    }
+	public void setNotes(Collection<Note> notes) {
+		this.notes = notes;
+	}
 
-    /*public List<Etudiant> getEtudiants() {
-        return etudiants;
-    }
-
-    public void setEtudiants(List<Etudiant> etudiants) {
-        this.etudiants = etudiants;
-    }*/
-
-    @Override
-    public String toString() {
-        return "Cours{" +
-                "code='" + code + '\'' +
-                ", titre='" + titre + '\'' +
-                ", description='" + description + '\'' +
-                ", formateur=" + (formateur != null ? formateur.getNom() : "Aucun") +
-                '}';
-    }
 }

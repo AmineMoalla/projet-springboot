@@ -2,6 +2,8 @@ package com.iit.entities;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Entity
 public class Inscription {
@@ -15,18 +17,15 @@ public class Inscription {
 	@ManyToOne
 	private Etudiant etudiant;
 
-	@ManyToOne
-	private Cours cours;
+	@OneToMany(mappedBy = "inscription")
+	private Collection<Groupe> groupes = new ArrayList<Groupe>();
 
-	// Constructeurs
+	private boolean valide;
+
+	@OneToOne(mappedBy = "inscription")
+	private Notification notification;
 
 	public Inscription() {
-	}
-
-	public Inscription(LocalDate date, Etudiant etudiant, Cours cours) {
-		this.date = date;
-		this.etudiant = etudiant;
-		this.cours= cours;
 	}
 
 	// Getters & Setters
@@ -55,18 +54,4 @@ public class Inscription {
 		this.etudiant = etudiant;
 	}
 
-	@Override
-	public String toString() {
-		return "Inscription{" + "id=" + id + ", date=" + date + ", etudiant="
-				+ (etudiant != null ? etudiant.getNom() : "Aucun") + ", cours="
-				+ (cours!= null ? cours.getTitre() : "Aucun") + '}';
-	}
-
-	public Cours getCours() {
-		return cours;
-	}
-
-	public void setCours(Cours cours) {
-		this.cours= cours;
-	}
 }

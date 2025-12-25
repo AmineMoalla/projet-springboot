@@ -8,69 +8,63 @@ import jakarta.persistence.*;
 @Entity
 public class Formateur {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    private String nom;
-    private String specialite;
-    private String email;
-     
-    @OneToMany(mappedBy = "formateur")
-    private Collection<Cours> cours  = new ArrayList<Cours>();
-   
-    
-    // Constructeurs
+	private String nom;
+	private String specialite;
+	private String email;
 
-    public Formateur() {}
+	
+	// Constructeurs
 
-    public Formateur(String nom, String specialite, String email) {
-        this.nom = nom;
-        this.specialite = specialite;
-        this.email = email;
-    }
+	public Formateur() {
+	}
 
-    // Getters & Setters
+	public Formateur(String nom, String specialite, String email) {
+		this.nom = nom;
+		this.specialite = specialite;
+		this.email = email;
+	}
 
-    public Long getId() {
-        return id;
-    }
+	// Getters & Setters
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public String getNom() {
-        return nom;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
+	public String getNom() {
+		return nom;
+	}
 
-    public String getSpecialite() {
-        return specialite;
-    }
+	public void setNom(String nom) {
+		this.nom = nom;
+	}
 
-    public void setSpecialite(String specialite) {
-        this.specialite = specialite;
-    }
+	public String getSpecialite() {
+		return specialite;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public void setSpecialite(String specialite) {
+		this.specialite = specialite;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    @Override
-    public String toString() {
-        return "Formateur{" +
-                "id=" + id +
-                ", nom='" + nom + '\'' +
-                ", specialite='" + specialite + '\'' +
-                ", email='" + email + '\'' +
-                '}';
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	@Override
+	public String toString() {
+		return "Formateur{" + "id=" + id + ", nom='" + nom + '\'' + ", specialite='" + specialite + '\'' + ", email='"
+				+ email + '\'' + '}';
+	}
 }

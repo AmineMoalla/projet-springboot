@@ -62,13 +62,5 @@ public class Note {
         this.cours = cours;
     }
 
-    @Override
-    public String toString() {
-        return "Note{" +
-                "id=" + id +
-                ", valeur=" + valeur +
-                ", etudiant=" + (etudiant != null ? etudiant.getNom() : "Aucun") +
-                ", cours=" + (cours != null ? cours.getTitre() : "Aucun") +
-                '}';
-    }
+ 
 }
