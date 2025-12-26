@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 @EnableJpaRepositories("com.iit.repositories")
 @EntityScan("com.iit.entities")
-@ComponentScan({"com.iit.projet", "com.iit.controllersRest", "com.iit.controllersThymleaf" }) // ajoute le package de tes controllers
+@ComponentScan({"com.iit.projet", "com.iit.controllersRest", "com.iit.controllersThymleaf", "com.iit.services" }) // ajoute le package de tes controllers
 
 
 public class ProjetApplication {

@@ -7,37 +7,46 @@ import org.springframework.web.bind.annotation.*;
 
 import com.iit.entities.Note;
 import com.iit.repositories.NoteRepository;
+import com.iit.services.NoteService;
 
 @RestController
 @RequestMapping("/api/notes")
 public class NoteRestController {
 
     @Autowired
-    private NoteRepository noteRepos;
+    private NoteService noteService;
 
     @GetMapping("/")
     public List<Note> getAll() {
-        return noteRepos.findAll();
+        return noteService.getAll();
     }
 
     @GetMapping("/{id}")
     public Note getById(@PathVariable Long id) {
-        return noteRepos.findById(id).orElse(null);
+        return noteService.getById(id).orElse(null);
     }
 
     @PostMapping("/")
     public Note save(@RequestBody Note n) {
-        return noteRepos.save(n);
+        return noteService.save(n);
     }
 
-    @PutMapping("/")
+    /*PutMapping("/")
     public Note update(@RequestBody Note n) {
-        return noteRepos.save(n);
+        return noteService.save(n);
+    }*/
+    
+    @PutMapping("/")
+    public Note update(@RequestBody Note note) {
+        if (note.getId() == null || !noteService.existsById(note.getId())) {
+            throw new RuntimeException("Note non trouvée pour mise à jour");
+        }
+        return noteService.save(note);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
-        noteRepos.deleteById(id);
+    	noteService.delete(id);
     }
 }
 

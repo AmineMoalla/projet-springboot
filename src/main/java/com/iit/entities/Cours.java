@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Cours {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Column(unique = true)
@@ -17,9 +19,11 @@ public class Cours {
 
 
 	@OneToMany(mappedBy = "cours")
+	@JsonIgnore
 	private Collection<AffectationCours> affectations = new ArrayList<AffectationCours>();
 
 	@OneToMany(mappedBy = "cours")
+	@JsonIgnore
 	private Collection<Note> notes = new ArrayList<Note>();
 
 	public Cours() {

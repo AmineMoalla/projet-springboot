@@ -27,7 +27,7 @@ public class EtudiantController {
     @GetMapping("/form")
     public String formEtudiant(Model model) {
         model.addAttribute("etudiant", new Etudiant());
-        return "formEtudiant"; // templates/formEtudiant.html
+        return "formEtudiant"; 
     }
 
     @PostMapping("/save")

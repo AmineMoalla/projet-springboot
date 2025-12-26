@@ -8,11 +8,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Etudiant {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Column(unique = true)
@@ -33,9 +35,11 @@ public class Etudiant {
 	 */
 
 	@OneToMany(mappedBy = "etudiant")
+	@JsonIgnore
 	private Collection<Inscription> inscriptions = new ArrayList<Inscription>();
 
 	@OneToMany(mappedBy = "etudiant")
+	@JsonIgnore
 	private Collection<Note> notes = new ArrayList<Note>();
 
 	// ----- Constructeurs ----- //
@@ -53,8 +57,35 @@ public class Etudiant {
 
 	// ----- Getters & Setters ----- //
 
+	
+	
+	
 	public String getMatricule() {
 		return matricule;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Collection<Inscription> getInscriptions() {
+		return inscriptions;
+	}
+
+	public void setInscriptions(Collection<Inscription> inscriptions) {
+		this.inscriptions = inscriptions;
+	}
+
+	public Collection<Note> getNotes() {
+		return notes;
+	}
+
+	public void setNotes(Collection<Note> notes) {
+		this.notes = notes;
 	}
 
 	public void setMatricule(String matricule) {

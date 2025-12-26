@@ -31,4 +31,8 @@ public class EtudiantService {
     public void delete(Long id) {
         repository.deleteById(id);
     }
+    
+    public boolean existsById(Long id) {
+        return repository.existsById(id);
+    }
 }

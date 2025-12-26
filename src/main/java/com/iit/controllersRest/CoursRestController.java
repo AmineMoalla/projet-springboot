@@ -6,36 +6,45 @@ import org.springframework.web.bind.annotation.*;
 
 import com.iit.entities.Cours;
 import com.iit.repositories.CoursRepository;
+import com.iit.services.CoursService;
 
 @RestController
 @RequestMapping("/api/cours")
 public class CoursRestController {
 
     @Autowired
-    private CoursRepository coursRepos;
+    private CoursService coursService;
 
     @GetMapping("/")
     public List<Cours> getAll() {
-        return coursRepos.findAll();
+        return coursService.getAll();
     }
 
     @GetMapping("/{id}")
     public Cours getById(@PathVariable Long id) {
-        return coursRepos.findById(id).orElse(null);
+        return coursService.getById(id).orElse(null);
     }
 
     @PostMapping("/")
     public Cours save(@RequestBody Cours c) {
-        return coursRepos.save(c);
+        return coursService.save(c);
     }
 
-    @PutMapping("/")
+    /*@PutMapping("/")
     public Cours update(@RequestBody Cours c) {
         return coursRepos.save(c);
+    }*/
+    
+    @PutMapping("/")
+    public Cours update(@RequestBody Cours c) {
+        if (c.getId() == null || !coursService.existsById(c.getId())) {
+            throw new RuntimeException("Cours non trouvé pour mise à jour");
+        }
+        return coursService.save(c);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
-        coursRepos.deleteById(id);
+        coursService.delete(id);
     }
 }
