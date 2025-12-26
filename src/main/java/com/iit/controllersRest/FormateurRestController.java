@@ -7,36 +7,46 @@ import org.springframework.web.bind.annotation.*;
 
 import com.iit.entities.Formateur;
 import com.iit.repositories.FormateurRepository;
+import com.iit.services.FormateurService;
 
 @RestController
 @RequestMapping("/api/formateurs")
 public class FormateurRestController {
 
     @Autowired
-    private FormateurRepository formateurRepos;
+    private FormateurService formateurService;
 
     @GetMapping("/")
     public List<Formateur> getAll() {
-        return formateurRepos.findAll();
-    }
+        return formateurService.getAll();
+    } 
 
     @GetMapping("/{id}")
     public Formateur getById(@PathVariable Long id) {
-        return formateurRepos.findById(id).orElse(null);
+        return formateurService.getById(id).orElse(null);
     }
 
     @PostMapping("/")
     public Formateur save(@RequestBody Formateur f) {
-        return formateurRepos.save(f);
+        return formateurService.save(f);
     }
 
-    @PutMapping("/")
+    /*@PutMapping("/")
     public Formateur update(@RequestBody Formateur f) {
-        return formateurRepos.save(f);
+        return formateurService.save(f);
+    }*/
+    
+    @PutMapping("/")
+    public Formateur update(@RequestBody Formateur formateur) {
+        if (formateur.getId() == null ||
+            !formateurService.existsById(formateur.getId())) {
+            throw new RuntimeException("Formateur non trouvé");
+        }
+        return formateurService.save(formateur);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
-        formateurRepos.deleteById(id);
+    	formateurService.delete(id);
     }
 }

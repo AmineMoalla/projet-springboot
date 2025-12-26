@@ -23,12 +23,16 @@ public class GroupeService {
     public Optional<Groupe> getById(Long id) {
         return repository.findById(id);
     }
-
+ 
     public Groupe save(Groupe groupe) {
         return repository.save(groupe);
     }
 
     public void delete(Long id) {
         repository.deleteById(id);
+    }
+    
+    public boolean existsById(Long id) {
+        return repository.existsById(id);
     }
 }

@@ -7,37 +7,47 @@ import org.springframework.web.bind.annotation.*;
 
 import com.iit.entities.Notification;
 import com.iit.repositories.NotificationRepository;
+import com.iit.services.NotificationService;
 
 @RestController
 @RequestMapping("/api/notifications")
 public class NotificationRestController {
 
     @Autowired
-    private NotificationRepository notificationRepos;
+    private NotificationService notificationService;
 
     @GetMapping("/")
     public List<Notification> getAll() {
-        return notificationRepos.findAll();
+        return notificationService.getAll();
     }
 
     @GetMapping("/{id}")
     public Notification getById(@PathVariable Long id) {
-        return notificationRepos.findById(id).orElse(null);
+        return notificationService.getById(id).orElse(null);
     }
 
     @PostMapping("/")
     public Notification save(@RequestBody Notification n) {
-        return notificationRepos.save(n);
+        return notificationService.save(n);
     }
 
-    @PutMapping("/")
+    /*@PutMapping("/")
     public Notification update(@RequestBody Notification n) {
         return notificationRepos.save(n);
+    }*/
+    
+    @PutMapping("/")
+    public Notification update(@RequestBody Notification notification) {
+        if (notification.getId() == null ||
+            !notificationService.existsById(notification.getId())) {
+            throw new RuntimeException("Notification non trouvée");
+        }
+        return notificationService.save(notification);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
-        notificationRepos.deleteById(id);
+    	notificationService.delete(id);
     }
 }
 

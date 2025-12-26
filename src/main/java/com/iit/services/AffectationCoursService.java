@@ -21,7 +21,7 @@ public class AffectationCoursService {
     public List<AffectationCours> getAll() {
         return repository.findAll();
     }
-
+ 
     public Optional<AffectationCours> getById(Long id) {
         return repository.findById(id);
     }
@@ -32,5 +32,9 @@ public class AffectationCoursService {
 
     public void delete(Long id) {
         repository.deleteById(id);
+    }
+    
+    public boolean existsById(Long id) {
+        return repository.existsById(id);
     }
 }

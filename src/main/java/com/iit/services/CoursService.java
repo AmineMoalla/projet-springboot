@@ -17,7 +17,7 @@ public class CoursService {
     }
 
     public List<Cours> getAll() {
-        return repository.findAll();
+        return repository.findAll(); 
     }
 
     public Optional<Cours> getById(Long id) {

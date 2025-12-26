@@ -1,59 +1,87 @@
 package com.iit.controllersThymleaf;
 
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import jakarta.validation.Valid;
 import com.iit.entities.Cours;
-import com.iit.repositories.CoursRepository;
+import com.iit.services.CoursService;
 
 @Controller
-@RequestMapping("/cours")
+@RequestMapping("/admin/cours")
 public class CoursController {
 
     @Autowired
-    private CoursRepository coursRepos;
+    private CoursService coursService;
 
-    @GetMapping("/index")
+    // Liste de tous les cours
+    @GetMapping
     public String index(Model model) {
-        model.addAttribute("coursList", coursRepos.findAll());
-        return "cours"; // templates/cours.html
+        model.addAttribute("coursList", coursService.getAll());
+        return "cours/index";
     }
 
-    @GetMapping("/form")
-    public String formCours(Model model) {
+    // Formulaire pour créer un nouveau cours
+    @GetMapping("/new")
+    public String form(Model model) {
         model.addAttribute("cours", new Cours());
-        return "formCours";
+        return "cours/form";
     }
 
-    @PostMapping("/save")
-    public String save(@Valid Cours c, BindingResult br) {
-        if (br.hasErrors()) return "formCours";
-        coursRepos.save(c);
-        return "confirmation";
+    // Formulaire pour éditer un cours existant
+    @GetMapping("/edit/{id}")
+    public String editForm(@PathVariable Long id, Model model, RedirectAttributes ra) {
+        Optional<Cours> coursOptional = coursService.getById(id);
+        if (coursOptional.isPresent()) {
+            model.addAttribute("cours", coursOptional.get());
+            return "cours/form"; // réutilisation du même template form.html
+        } else {
+            ra.addFlashAttribute("error", "Cours non trouvé avec l'ID: " + id);
+            return "redirect:/admin/cours";
+        }
     }
 
-    @GetMapping("/edit")
-    public String edit(Model model, @RequestParam Long id) {
-        Cours c = coursRepos.findById(id).orElse(null);
-        model.addAttribute("cours", c);
-        return "editCours";
+    // Création d'un nouveau cours
+    @PostMapping
+    public String save(@RequestParam String nom, RedirectAttributes ra) {
+        Cours cours = new Cours();
+        cours.setNom(nom);
+        coursService.save(cours);
+        ra.addFlashAttribute("success", "Cours créé avec succès!");
+        return "redirect:/admin/cours";
     }
 
-    @PostMapping("/update")
-    public String update(@Valid Cours c, BindingResult br) {
-        if (br.hasErrors()) return "editCours";
-        coursRepos.save(c);
-        return "confirmation";
+    // Mise à jour d'un cours existant
+    @PostMapping("/{id}")
+    public String update(@PathVariable Long id, 
+                         @RequestParam String nom, 
+                         RedirectAttributes ra) {
+        Optional<Cours> coursOptional = coursService.getById(id);
+        if (coursOptional.isPresent()) {
+            Cours cours = coursOptional.get();
+            cours.setNom(nom);
+            coursService.save(cours);
+            ra.addFlashAttribute("success", "Cours mis à jour avec succès!");
+        } else {
+            ra.addFlashAttribute("error", "Cours non trouvé avec l'ID: " + id);
+        }
+        return "redirect:/admin/cours";
     }
-
-    @GetMapping("/delete")
-    public String delete(@RequestParam Long id) {
-        coursRepos.deleteById(id);
-        return "redirect:index";
+ 
+    // Suppression d'un cours
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable Long id, RedirectAttributes ra) {
+        Optional<Cours> coursOptional = coursService.getById(id);
+        if (coursOptional.isPresent()) {
+            coursService.delete(id);
+            ra.addFlashAttribute("success", "Cours supprimé avec succès!");
+        } else {
+            ra.addFlashAttribute("error", "Cours non trouvé avec l'ID: " + id);
+        }
+        return "redirect:/admin/cours";
     }
 }

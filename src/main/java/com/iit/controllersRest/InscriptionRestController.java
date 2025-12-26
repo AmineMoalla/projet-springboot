@@ -7,37 +7,49 @@ import org.springframework.web.bind.annotation.*;
 
 import com.iit.entities.Inscription;
 import com.iit.repositories.InscriptionRepository;
+import com.iit.services.InscriptionService;
 
 @RestController
 @RequestMapping("/api/inscriptions")
 public class InscriptionRestController {
 
     @Autowired
-    private InscriptionRepository inscriptionRepos;
+    private InscriptionService inscriptionService;
 
     @GetMapping("/")
     public List<Inscription> getAll() {
-        return inscriptionRepos.findAll();
+        return inscriptionService.getAll();
     }
 
     @GetMapping("/{id}")
     public Inscription getById(@PathVariable Long id) {
-        return inscriptionRepos.findById(id).orElse(null);
+        return inscriptionService.getById(id).orElse(null);
     }
 
     @PostMapping("/")
     public Inscription save(@RequestBody Inscription i) {
-        return inscriptionRepos.save(i);
+        return inscriptionService.save(i);
     }
 
-    @PutMapping("/")
+    /*@PutMapping("/")
     public Inscription update(@RequestBody Inscription i) {
         return inscriptionRepos.save(i);
+    }*/
+    
+    
+    
+    @PutMapping("/")
+    public Inscription update(@RequestBody Inscription inscription) {
+        if (inscription.getId() == null ||
+            !inscriptionService.existsById(inscription.getId())) {
+            throw new RuntimeException("Inscription non trouvée");
+        }
+        return inscriptionService.save(inscription);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
-        inscriptionRepos.deleteById(id);
+    	inscriptionService.delete(id);
     }
 }
 

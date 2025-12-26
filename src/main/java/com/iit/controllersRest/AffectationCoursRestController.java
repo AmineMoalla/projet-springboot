@@ -9,42 +9,50 @@ import org.springframework.web.bind.annotation.*;
 
 import com.iit.entities.AffectationCours;
 import com.iit.repositories.AffectationRepository;
+import com.iit.services.AffectationCoursService;
 
 @RestController
 @RequestMapping("/api/affectations")
 public class AffectationCoursRestController {
 
     @Autowired
-    private AffectationRepository affectationRepos;
+    private AffectationCoursService affectationService;
 
-    @GetMapping("/index")
+    /*@GetMapping("/index")
     public String accueil() {
         return "Bienvenue au service REST 'AffectationCours'";
-    }
+    }*/
 
-    @GetMapping(value="/", produces={MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @GetMapping(value="/")
     public List<AffectationCours> getAll() {
-        return affectationRepos.findAll();
+        return affectationService.getAll();
     }
 
-    @GetMapping(value="/{id}", produces={MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @GetMapping(value="/{id}")
     public AffectationCours getById(@PathVariable Long id) {
-        return affectationRepos.findById(id).orElse(null);
+        return affectationService.getById(id).orElse(null);
     }
 
-    @PostMapping(value="/", consumes=MediaType.APPLICATION_JSON_VALUE,
-                 produces={MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @PostMapping(value="/")
     public AffectationCours save(@RequestBody AffectationCours a) {
-        return affectationRepos.save(a);
+        return affectationService.save(a);
     }
 
-    @PutMapping(value="/", produces={MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    /*@PutMapping(value="/")
     public AffectationCours update(@RequestBody AffectationCours a) {
         return affectationRepos.save(a);
+    }*/
+    
+    @PutMapping("/")
+    public AffectationCours update(@RequestBody AffectationCours a) {
+        if (a.getId() == null || !affectationService.existsById(a.getId())) {
+            throw new RuntimeException("Affectation non trouvée");
+        }
+        return affectationService.save(a);
     }
 
     @DeleteMapping(value="/{id}")
     public void delete(@PathVariable Long id) {
-        affectationRepos.deleteById(id);
+    	affectationService.delete(id);
     }
 }

@@ -19,7 +19,7 @@ public class NoteService {
     // Récupérer toutes les notes
     public List<Note> getAll() {
         return repository.findAll();
-    }
+    }  
 
     // Récupérer une note par son id
     public Optional<Note> getById(Long id) {

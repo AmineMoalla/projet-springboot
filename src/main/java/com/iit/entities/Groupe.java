@@ -3,6 +3,8 @@ package com.iit.entities;
 import jakarta.persistence.*;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 
 public class Groupe {
@@ -24,6 +26,7 @@ public class Groupe {
 
     
     @OneToMany(mappedBy = "groupe", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<AffectationCours> affectationsCours;
 
     

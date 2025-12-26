@@ -14,7 +14,7 @@ public class NotificationService {
 
     public NotificationService(NotificationRepository repository) {
         this.repository = repository;
-    }
+    }      
 
     public List<Notification> getAll() {
         return repository.findAll();
@@ -30,5 +30,10 @@ public class NotificationService {
 
     public void delete(Long id) {
         repository.deleteById(id);
+    }
+    
+    
+    public boolean existsById(Long id) {
+        return repository.existsById(id);
     }
 }
