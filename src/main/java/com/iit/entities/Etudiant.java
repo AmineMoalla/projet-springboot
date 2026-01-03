@@ -18,8 +18,8 @@ public class Etudiant {
 	private Long id;
 
 	@Column(unique = true)
-	private String matricule;
 
+	private String matricule;
 	private String nom;
 	private String prenom;
 	@Email
@@ -28,15 +28,14 @@ public class Etudiant {
 	@Column(name = "date_inscription")
 	private LocalDate dateInscription;
 
-	// Relation avec Cours (Many-to-Many)
-	/*
-	 * @ManyToMany(mappedBy = "etudiants") private List<Cours> coursInscrits = new
-	 * ArrayList<Cours>();
-	 */
-
-	@OneToMany(mappedBy = "etudiant")
-	@JsonIgnore
-	private Collection<Inscription> inscriptions = new ArrayList<Inscription>();
+	@OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "inscription_id") // clé étrangère dans Etudiant
+    private Inscription inscription;
+	// @OneToOne(mappedBy = "etudiant")
+	// @JsonIgnore
+	// @JoinColumn(name = "inscription_id")  // crée la colonne inscription_id dans etudiant
+	// // @Column(nullable = true)
+	// private Inscription inscription;
 
 	@OneToMany(mappedBy = "etudiant")
 	@JsonIgnore
@@ -47,12 +46,14 @@ public class Etudiant {
 	public Etudiant() {
 	}
 
-	public Etudiant(String matricule, String nom, String prenom, String email, LocalDate dateInscription) {
+	public Etudiant(String matricule, String nom, String prenom, String email, LocalDate dateInscription, Inscription inscription) {
 		this.matricule = matricule;
 		this.nom = nom;
 		this.prenom = prenom;
 		this.email = email;
 		this.dateInscription = dateInscription;
+		this.inscription = inscription;
+		
 	}
 
 	// ----- Getters & Setters ----- //
@@ -72,12 +73,12 @@ public class Etudiant {
 		this.id = id;
 	}
 
-	public Collection<Inscription> getInscriptions() {
-		return inscriptions;
+	public Inscription getInscription() {
+		return inscription;
 	}
 
-	public void setInscriptions(Collection<Inscription> inscriptions) {
-		this.inscriptions = inscriptions;
+	public void setInscription(Inscription inscription) {
+		this.inscription = inscription;
 	}
 
 	public Collection<Note> getNotes() {

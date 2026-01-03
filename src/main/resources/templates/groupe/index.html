@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Groupes - IIT School</title>
+    <head th:replace="layout/header :: common-head"></head>
+</head>
+<body>
+    <div th:replace="layout/navbar :: sidebar"></div>
+    <div id="content" style="margin-left:260px; padding:1.5rem; min-height:100vh;">
+        <div class="content-header bg-white rounded-3 p-4 mb-4 shadow-sm">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h3 mb-2">
+                        <i class="fas fa-users me-2"></i>Gestion des Groupes
+                    </h1>
+                    <p class="text-muted mb-0">Liste de tous les groupes</p>
+                </div>
+                <div>
+                    <a href="/admin/groupe/new" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Nouveau groupe
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-- Messages flash -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <!-- Table -->
+        <div class="table-container bg-white rounded-3 p-4 shadow-sm">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Code du groupe</th>
+                            <th>Niveau</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Si la liste est vide -->
+                        <tr th:if="${#lists.isEmpty(groupeList)}">
+                            <td colspan="3">
+                                <div class="empty-state text-center p-5">
+                                    <i class="fas fa-users fa-3x text-secondary mb-3"></i>
+                                    <h4 class="text-muted">Aucun groupe disponible</h4>
+                                    <p class="text-muted mb-3">Commencez par créer votre premier groupe</p>
+                                    <a href="/admin/groupe/new" class="btn btn-primary">
+                                        <i class="fas fa-plus me-2"></i>Créer un groupe
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Boucle sur les groupes de la base de données -->
+                        <tr th:each="groupe : ${groupeList}">
+                            <td th:text="${groupe.id}">ID</td>
+                            <td th:text="${groupe.code}">Code</td>
+                            <td th:text="${groupe.niveau}">Niveau</td>
+                            <td>
+                                <div class="d-flex">
+                                    <!-- Bouton Éditer -->
+                                    <a th:href="@{'/admin/groupe/edit/' + ${groupe.id}}" class="btn-action btn-edit" title="Modifier">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <!-- Formulaire Supprimer -->
+                                    <form th:action="@{'/admin/groupe/delete/' + ${groupe.id}}" method="get" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce groupe ?')">
+                                        <button type="submit" class="btn-action btn-delete" title="Supprimer">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- Nombre total -->
+            <div class="mt-3 text-muted">
+                <i class="fas fa-info-circle me-1"></i>
+                Total: <span th:text="${#lists.size(groupeList)}">0</span> groupes
+            </div>
+        </div>
+    </div>
+    <div th:replace="layout/footer :: footer"></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                document.querySelectorAll('.alert').forEach(alert => {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                });
+            }, 5000);
+        });
+    </script>
+</body>
+</html>

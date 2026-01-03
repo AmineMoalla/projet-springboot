@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier Formateur - IIT School</title>
+    <head th:replace="layout/header :: common-head"></head>
+</head>
+<body>
+    <div th:replace="layout/navbar :: sidebar"></div>
+    <div id="content">
+        <div class="content-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h3 mb-2">
+                        <i class="fas fa-edit me-2"></i>Modifier Formateur
+                    </h1>
+                    <p class="text-muted mb-0">Modifiez les informations du formateur</p>
+                </div>
+                <a href="/admin/formateur/index" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Retour à la liste
+                </a>
+            </div>
+        </div>
+        <div class="form-container bg-white rounded-3 p-4 shadow-sm mt-4" style="max-width:600px;margin:0 auto;">
+            <form th:action="@{/admin/formateur/save}" th:object="${formateur}" method="post" class="needs-validation" novalidate>
+                <input type="hidden" th:field="*{id}" />
+                <div class="mb-3">
+                    <label for="nom" class="form-label">Nom *</label>
+                    <input type="text" id="nom" th:field="*{nom}" class="form-control" required />
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email *</label>
+                    <input type="email" id="email" th:field="*{email}" class="form-control" required />
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="specialite" class="form-label">Spécialité *</label>
+                    <input type="text" id="specialite" th:field="*{specialite}" class="form-control" required />
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('specialite')}" th:errors="*{specialite}"></div>
+                </div>
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="reset" class="btn btn-outline-secondary">
+                        <i class="fas fa-redo me-2"></i>Réinitialiser
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>Mettre à jour
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div th:replace="layout/footer :: footer"></div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

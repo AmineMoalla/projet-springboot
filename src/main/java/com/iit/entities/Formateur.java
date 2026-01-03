@@ -16,20 +16,27 @@ public class Formateur {
 	private String specialite;
 	private String email;
 
+	@OneToOne()
+	private Cours cours;
 	
-	// Constructeurs
-
 	public Formateur() {
 	}
 
-	public Formateur(String nom, String specialite, String email) {
+	public Formateur(String nom, String specialite, String email, Cours cours) {
 		this.nom = nom;
 		this.specialite = specialite;
 		this.email = email;
+		this.cours = cours;
 	}
 
 	// Getters & Setters
 
+ public Cours getCours() {
+		return cours;
+	}
+	public void setCours(Cours cours) {
+		this.cours = cours;
+	}
 	public Long getId() {
 		return id;
 	}

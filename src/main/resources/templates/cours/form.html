@@ -4,92 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nouveau Cours - IIT School</title>
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        :root {
-            --primary-color: #4361ee;
-            --light-bg: #f8f9fa;
-            --dark-bg: #212529;
-            --sidebar-width: 260px;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: var(--light-bg);
-            margin: 0;
-            padding: 0;
-        }
-        
-        #sidebar {
-            width: var(--sidebar-width);
-            background: var(--dark-bg);
-            color: white;
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            box-shadow: 3px 0 15px rgba(0,0,0,0.1);
-        }
-        
-        .sidebar-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        
-        .sidebar-header h3 {
-            color: white;
-            font-weight: 700;
-            font-size: 1.4rem;
-            margin: 0;
-        }
-        
-        .nav-link {
-            color: rgba(255,255,255,0.8);
-            padding: 0.85rem 1.5rem;
-            margin: 0.2rem 0.8rem;
-            border-radius: 10px;
-            text-decoration: none;
-            display: block;
-        }
-        
-        #content {
-            margin-left: var(--sidebar-width);
-            padding: 1.5rem;
-            min-height: 100vh;
-        }
-        
-        .form-container {
-            background: white;
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-    </style>
+    <head th:replace="layout/header :: common-head"></head>
 </head>
 <body>
     <!-- Sidebar -->
-    <div id="sidebar">
-        <div class="sidebar-header">
-            <h3><i class="fas fa-graduation-cap"></i> IIT School</h3>
-        </div>
-        <div>
-            <a href="/admin/dashboard" class="nav-link">
-                <i class="fas fa-tachometer-alt"></i> Dashboard
-            </a>
-            <a href="/admin/cours" class="nav-link">
-                <i class="fas fa-book"></i> Cours
-            </a>
-            <a href="#" class="nav-link">
-                <i class="fas fa-users"></i> Étudiants
-            </a>
-        </div>
-    </div>
-    
+    <div th:replace="layout/navbar :: sidebar"></div>
     <div id="content">
         <div class="content-header">
             <div class="d-flex justify-content-between align-items-center">
@@ -104,33 +23,30 @@
                 </a>
             </div>
         </div>
-        
-        <form th:action="${cours.id} != null ? @{'/admin/cours/' + ${cours.id}} : @{/admin/cours}"
-      method="post">
-    <div class="mb-3">
-        <label for="nom" class="form-label">Nom du cours *</label>
-        <input type="text" class="form-control" id="nom" name="nom"
-               th:value="${cours.nom}" required>
-        <div class="form-text">Le nom doit être unique</div>
-    </div>
-
-    <!-- Méthode PUT si édition -->
-    <input type="hidden" th:if="${cours.id != null}" name="_method" value="put" />
-
-    <div class="d-flex justify-content-between mt-4">
-        <button type="reset" class="btn btn-outline-secondary">
-            <i class="fas fa-redo me-2"></i>Réinitialiser
-        </button>
-        <button type="submit" class="btn btn-primary">
-            <i class="fas fa-save me-2"></i>
-            <span th:text="${cours.id != null} ? 'Mettre à jour' : 'Créer le cours'">Créer</span>
-        </button>
-    </div>
-</form>
-
+        <div class="form-container bg-white rounded-3 p-4 shadow-sm mt-4" style="max-width:600px;margin:0 auto;">
+            <form th:action="${cours.id} != null ? @{'/admin/cours/' + ${cours.id}} : @{/admin/cours}"
+                  method="post">
+                <div class="mb-3">
+                    <label for="nom" class="form-label">Nom du cours *</label>
+                    <input type="text" class="form-control" id="nom" name="nom"
+                           th:value="${cours.nom}" required>
+                    <div class="form-text">Le nom doit être unique</div>
+                </div>
+                <!-- Méthode PUT si édition -->
+                <input type="hidden" th:if="${cours.id != null}" name="_method" value="put" />
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="reset" class="btn btn-outline-secondary">
+                        <i class="fas fa-redo me-2"></i>Réinitialiser
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>
+                        <span th:text="${cours.id != null} ? 'Mettre à jour' : 'Créer le cours'">Créer</span>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
-    
+    <div th:replace="layout/footer :: footer"></div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

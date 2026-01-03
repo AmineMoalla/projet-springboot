@@ -26,15 +26,19 @@ public class Cours {
 	@JsonIgnore
 	private Collection<Note> notes = new ArrayList<Note>();
 
+	@OneToOne()
+	private Formateur formateur;
+
 	public Cours() {
 	}
 
 	public Cours(String nom, Formateur formateur, Collection<AffectationCours> affectations, Collection<Note> notes) {
 		super();
 		this.nom = nom;
-		
+		this.formateur = formateur;
 		this.affectations = affectations;
 		this.notes = notes;
+
 	}
 
 	public Long getId() {
@@ -53,7 +57,13 @@ public class Cours {
 		this.nom = nom;
 	}
 
-	
+	public Formateur getFormateur() {
+		return formateur;
+	}
+
+	public void setFormateur(Formateur formateur) {
+		this.formateur = formateur;
+	}
 
 	public Collection<AffectationCours> getAffectations() {
 		return affectations;

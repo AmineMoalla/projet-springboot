@@ -9,7 +9,7 @@ import com.iit.repositories.CoursRepository;
 import com.iit.services.CoursService;
 
 @RestController
-@RequestMapping("/api/cours")
+@RequestMapping("/api/cours")  
 public class CoursRestController {
 
     @Autowired

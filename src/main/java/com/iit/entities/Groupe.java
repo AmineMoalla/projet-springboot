@@ -13,17 +13,16 @@ public class Groupe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    //private String nom;
     private String niveau;
     
     @Column(unique=true)
     private String code;
     
-    @ManyToOne
-    private Inscription inscription;
-    
-    /*@OneToMany(mappedBy = "groupe", cascade = CascadeType.ALL)
-    private List<Inscription> inscriptions;*/
-
+       
+    @OneToMany(mappedBy = "groupe", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Inscription> inscriptions;
     
     @OneToMany(mappedBy = "groupe", cascade = CascadeType.ALL)
     @JsonIgnore
@@ -34,17 +33,20 @@ public class Groupe {
 
    
 
-    public Groupe(String niveau, String code, List<AffectationCours> affectationsCours) {
-		super();
-		
-		this.niveau = niveau;
-		this.code = code;
-		this.affectationsCours = affectationsCours;
-	}
+    public Groupe( String niveau, String code, List<AffectationCours> affectationsCours, List<Inscription> inscriptions) {
+        super();        
+        this.niveau = niveau;
+        this.code = code;
+        this.affectationsCours = affectationsCours;
+        this.inscriptions = inscriptions;
+    }
+   public List<Inscription> getInscriptions() {
+        return inscriptions;
+    }
 
-
-
-	// 🔹 Getters & Setters
+    public void setInscriptions(List<Inscription> inscriptions) {
+        this.inscriptions = inscriptions;
+    }
     public Long getId() {
         return id;
     }
@@ -79,6 +81,6 @@ public class Groupe {
 		this.id = id;
 	}
 
-   
+
 
    }

@@ -9,13 +9,10 @@ public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    
-    @OneToOne
-    private Inscription inscription;
-
-   
     private String titre;
+    
+ @OneToOne
+    private Inscription inscription;
 
     @Column(nullable = false, length = 500)
     private String message;
@@ -26,14 +23,14 @@ public class Notification {
 
     
     public Notification() {
-        this.dateCreation = LocalDateTime.now();
+       
     }
 
-    public Notification(Inscription inscription, String titre, String message) {
+    public Notification(Inscription inscription, String titre, String message, LocalDateTime dateCreation) {
         this.inscription = inscription;
         this.titre = titre;
         this.message = message;
-        this.dateCreation = LocalDateTime.now();
+        this.dateCreation = dateCreation;
        
     }
 
@@ -66,9 +63,7 @@ public class Notification {
         this.message = message;
     }
 
-   
-
-    public LocalDateTime getDateCreation() {
+     public LocalDateTime getDateCreation() {
         return dateCreation;
     }
 }

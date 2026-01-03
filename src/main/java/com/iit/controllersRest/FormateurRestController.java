@@ -23,7 +23,7 @@ public class FormateurRestController {
 
     @GetMapping("/{id}")
     public Formateur getById(@PathVariable Long id) {
-        return formateurService.getById(id).orElse(null);
+        return formateurService.getById(id);
     }
 
     @PostMapping("/")

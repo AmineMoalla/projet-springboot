@@ -9,7 +9,6 @@ public class Note {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private Double valeur;
 
     @ManyToOne
@@ -18,7 +17,6 @@ public class Note {
     @ManyToOne
     private Cours cours;
 
-    
 
     public Note() {}
 

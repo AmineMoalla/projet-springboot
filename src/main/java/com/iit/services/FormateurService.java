@@ -20,14 +20,14 @@ public class FormateurService {
         return repository.findAll();
     }
 
-    public Optional<Formateur> getById(Long id) {
-        return repository.findById(id);
+    public Formateur getById(Long id) {
+        return repository.findById(id).orElse(null);
     }
 
     public Formateur save(Formateur formateur) {
         return repository.save(formateur);
     }
-
+   
     public void delete(Long id) {
         repository.deleteById(id);
     }

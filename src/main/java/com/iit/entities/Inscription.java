@@ -11,24 +11,37 @@ public class Inscription {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
 	private LocalDate date;
+	private boolean valide=false;
+
+
+	// @OneToOne
+	// @Column(nullable = true)
+	// @JoinColumn(name = "etudiant_id", nullable = true)
+	// @OneToOne(mappedBy = "inscription")
+	// private Etudiant etudiant;
+   @ManyToOne
+    @JoinColumn(name = "etudiant_id") // clé étrangère dans Inscription
+    private Etudiant etudiant;
 
 	@ManyToOne
-	private Etudiant etudiant;
+	
+	@JoinColumn(name = "groupe_id", nullable = true)
 
-	@OneToMany(mappedBy = "inscription")
-	private Collection<Groupe> groupes = new ArrayList<Groupe>();
+    private Groupe groupe;
 
-	private boolean valide;
 
-	@OneToOne(mappedBy = "inscription")
-	private Notification notification;
+	
+
 
 	public Inscription() {
 	}
-
-	// Getters & Setters
+	public Inscription(LocalDate date, Etudiant etudiant, Groupe groupe) {
+		super();
+		this.date = date;
+		this.etudiant = etudiant;
+		this.groupe = groupe;
+	}
 
 	public Long getId() {
 		return id;
@@ -52,6 +65,12 @@ public class Inscription {
 
 	public void setEtudiant(Etudiant etudiant) {
 		this.etudiant = etudiant;
+	}
+	public boolean isValide() {
+		return valide;
+	}
+	public void setValide(boolean valide) {
+		this.valide = valide;
 	}
 
 }
