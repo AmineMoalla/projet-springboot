@@ -20,6 +20,9 @@ public class FormateurController {
     @Autowired
     private FormateurService formateurService;
 
+    @Autowired
+    private com.iit.services.CoursService coursService;
+
     @GetMapping("/index")
     public String index(Model model) {
         model.addAttribute("formateurs", formateurService.getAll());
@@ -29,12 +32,19 @@ public class FormateurController {
     @GetMapping("/form")
     public String formFormateur(Model model) {
         model.addAttribute("formateur", new Formateur());
+        model.addAttribute("coursList", coursService.getAll());
         return "formateur/form";
     }
 
     @PostMapping("/save")
-    public String save(@Valid Formateur f, BindingResult br) {
+    public String save(@Valid Formateur f,
+                       BindingResult br,
+                       @RequestParam(required = false) Long cours) {
         if (br.hasErrors()) return "formateur/form";
+        if (cours != null) {
+            com.iit.entities.Cours c = coursService.getById(cours).orElse(null);
+            f.setCours(c);
+        }
         formateurService.save(f);
         return "redirect:/admin/formateur/index";
     }
@@ -47,13 +57,22 @@ public class FormateurController {
                 throw new RuntimeException("Formateur introuvable");
             }
             model.addAttribute("formateur", formateur);
+            model.addAttribute("coursList", coursService.getAll());
             return "formateur/edit";
         }
 
 
     @PostMapping("/update")
-    public String update(@Valid Formateur f, BindingResult br) {
+    public String update(@Valid Formateur f,
+                        BindingResult br,
+                        @RequestParam(required = false) Long cours) {
         if (br.hasErrors()) return "formateur/edit";
+        if (cours != null) {
+            com.iit.entities.Cours c = coursService.getById(cours).orElse(null);
+            f.setCours(c);
+        } else {
+            f.setCours(null);
+        }
         formateurService.save(f);
         return "redirect:/admin/formateur/index";
     }

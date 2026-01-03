@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/header :: common-head"></head>
+<body>
+    <div th:replace="layout/navbar :: sidebar"></div>
+    <div id="content" style="margin-left:260px; padding:1.5rem; min-height:100vh;">
+        <div class="content-header bg-white rounded-3 p-4 mb-4 shadow-sm">
+            <h1 class="h3 mb-2">
+                <i class="fas fa-users me-2"></i>Liste des étudiants
+            </h1>
+        </div>
+        <div class="table-container bg-white rounded-3 p-4 shadow-sm">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>Prénom</th>
+                            <th>Email</th>
+                            <th>Date inscription</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="etudiant : ${etudiants}" th:if="${etudiant.inscription == null}">
+                            <td th:text="${etudiant.id}"></td>
+                            <td th:text="${etudiant.nom}"></td>
+                            <td th:text="${etudiant.prenom}"></td>
+                            <td th:text="${etudiant.email}"></td>
+                            <td th:text="${etudiant.dateInscription}"></td>
+                            <td>
+                                <form th:action="@{'/admin/etudiant/valider/' + ${etudiant.id}}" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-success btn-sm">Valider</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div th:replace="layout/footer :: footer"></div>
+</body>
+</html>

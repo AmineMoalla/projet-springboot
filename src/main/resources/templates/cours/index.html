@@ -39,6 +39,7 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Nom du cours</th>
+                                    <th>Formateur</th>
                                     <th>Affectations</th>
                                     <th>Notes</th>
                                     <th>Actions</th>
@@ -64,6 +65,7 @@
                                     <td>
                                         <strong th:text="${cours.nom}">Nom</strong>
                                     </td>
+                                    <td th:text="${cours.formateur != null ? cours.formateur.nom : 'Non attribué'}">Formateur</td>
                                     <td>
                                         <span th:text="${cours.affectations != null ? cours.affectations.size() : 0}">0</span> affectation(s)
                                     </td>

@@ -43,6 +43,7 @@
                             <th>Nom</th>
                             <th>Email</th>
                             <th>Spécialité</th>
+                            <th>Cours</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -62,19 +63,18 @@
                         </tr>
                         <!-- Boucle sur les formateurs de la base de données -->
                         <tr th:each="formateur : ${formateurs}" th:if="${formateur.id != null}">
-                            <td th:text="${formateur.id}">ID</td>
-                            <td><strong th:text="${formateur.nom}">Nom</strong></td>
-                            <td th:text="${formateur.email}">Email</td>
-                            <td th:text="${formateur.specialite}">Spécialité</td>
+                            <td th:text="${formateur.id}"></td>
+                            <td><strong th:text="${formateur.nom}"></strong></td>
+                            <td th:text="${formateur.email}"></td>
+                            <td th:text="${formateur.specialite}"></td>
+                            <td th:text="${formateur.cours != null ? formateur.cours.nom : 'Non attribué'}"></td>
                             <td>
                                 <div class="d-flex">
-                                    <!-- Bouton Éditer -->
                                     <a th:href="@{'/admin/formateur/edit/' + ${formateur.id}}"
                                        class="btn-action btn-edit"
                                        title="Modifier">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <!-- Formulaire Supprimer -->
                                     <form th:action="@{'/admin/formateur/delete/' + ${formateur.id}}" method="get" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce formateur ?')">
                                         <button type="submit" class="btn-action btn-delete" title="Supprimer">
                                             <i class="fas fa-trash"></i>

@@ -12,7 +12,7 @@ public class Inscription {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private LocalDate date;
-	private boolean valide=false;
+	//private boolean valide=false;
 
 
 	// @OneToOne
@@ -66,11 +66,6 @@ public class Inscription {
 	public void setEtudiant(Etudiant etudiant) {
 		this.etudiant = etudiant;
 	}
-	public boolean isValide() {
-		return valide;
-	}
-	public void setValide(boolean valide) {
-		this.valide = valide;
-	}
+
 
 }

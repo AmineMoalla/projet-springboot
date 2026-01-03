@@ -40,6 +40,16 @@
                     <input type="text" id="specialite" th:field="*{specialite}" class="form-control" required />
                     <div class="invalid-feedback" th:if="${#fields.hasErrors('specialite')}" th:errors="*{specialite}"></div>
                 </div>
+                <div class="mb-3">
+                    <label for="cours" class="form-label">Cours associé</label>
+                    <select class="form-control" id="cours" name="cours">
+                        <option th:each="cours : ${coursList}"
+                                th:value="${cours.id}"
+                                th:text="${cours.nom}"
+                                th:selected="${formateur.cours != null} ? ${cours.id} == ${formateur.cours.id} : false">
+                        </option>
+                    </select>
+                </div>
                 <div class="d-flex justify-content-between mt-4">
                     <button type="reset" class="btn btn-outline-secondary">
                         <i class="fas fa-redo me-2"></i>Réinitialiser
