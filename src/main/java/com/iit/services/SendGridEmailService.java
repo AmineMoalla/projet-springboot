@@ -1,4 +1,3 @@
-
 package com.iit.services;
 
 import com.sendgrid.SendGrid;
@@ -18,10 +17,19 @@ public class SendGridEmailService {
     private String sendGridApiKey;
 
     public void sendEmail(String to, String subject, String content) throws Exception {
-        Email from = new Email("aminmoalla7@gmail.com");
+        // Utiliser une adresse professionnelle liée au domaine
+        Email from = new Email("mohamed.amine.moalla@iit.ens.tn", "YFA School");
         Email toEmail = new Email(to);
-        Content emailContent = new Content("text/plain", content);
-        Mail mail = new Mail(from, subject, toEmail, emailContent);
+        Content plainContent = new Content("text/plain", content);
+        Content htmlContent = new Content("text/html", "<p>" + content + "</p><br><small>YFA School</small>");
+        Mail mail = new Mail();
+        mail.setFrom(from);
+        mail.setSubject(subject);
+        mail.addContent(plainContent);
+        mail.addContent(htmlContent);
+        mail.addPersonalization(new com.sendgrid.helpers.mail.objects.Personalization() {{
+            addTo(toEmail);
+        }});
 
         SendGrid sg = new SendGrid(sendGridApiKey);
         Request request = new Request();

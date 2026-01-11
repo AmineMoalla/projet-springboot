@@ -1,6 +1,68 @@
+        <!-- ...existing code... -->
+
+       
+
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            var inscriptionData = {
+                labels: ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"],
+                datasets: [{
+                    label: "Inscriptions",
+                    data: /*[[${inscriptionParMois}]]*/ [],
+                    fill: false,
+                    borderColor: 'rgb(67, 97, 238)',
+                    tension: 0.1
+                }]
+            };
+            var coursParGroupeData = {
+                labels: /*[[${groupeLabels}]]*/ [],
+                datasets: [{
+                    label: "Cours par groupe",
+                    data: /*[[${coursParGroupe}]]*/ [],
+                    backgroundColor: 'rgba(76, 201, 240, 0.7)',
+                    borderColor: 'rgba(67, 97, 238, 1)',
+                    borderWidth: 2,
+                    maxBarThickness: 60
+                }]
+            };
+            window.addEventListener('DOMContentLoaded', function() {
+                var ctx1 = document.getElementById('inscriptionChart').getContext('2d');
+                new Chart(ctx1, {
+                    type: 'line',
+                    data: inscriptionData,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: true },
+                            title: { display: true, text: 'Évolution des inscriptions par mois' }
+                        }
+                    }
+                });
+                var ctx2 = document.getElementById('coursParGroupeChart').getContext('2d');
+                new Chart(ctx2, {
+                    type: 'bar',
+                    data: coursParGroupeData,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: false },
+                            title: { display: true, text: 'Nombre de cours par groupe' }
+                        },
+                        scales: {
+                            y: { beginAtZero: true }
+                        },
+                        indexAxis: 'x',
+                        layout: { padding: 20 }
+                    }
+                });
+            });
+            /*]]>*/
+        </script>
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout/header :: common-head"></head>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <body>
     <!-- Sidebar -->
     <div th:replace="layout/navbar :: sidebar"></div>
@@ -30,34 +92,102 @@
         <!-- Stats Cards dynamiques -->
         <div class="row g-4 mb-4">
             <div class="col-xl-3 col-md-6">
-                <div class="stats-card">
+                <a href="/admin/cours" style="text-decoration:none">
+                <div class="stats-card clickable">
                     <div class="stats-icon" style="background: rgba(67, 97, 238, 0.1); color: var(--primary-color);">
                         <i class="fas fa-book"></i>
                     </div>
                     <div class="stats-number" th:text="${nbCours}">0</div>
                     <div class="stats-label">Cours Actifs</div>
                 </div>
+                </a>
             </div>
             <div class="col-xl-3 col-md-6">
-                <div class="stats-card">
+                <a href="/admin/etudiant/index" style="text-decoration:none">
+                <div class="stats-card clickable">
                     <div class="stats-icon" style="background: rgba(76, 201, 240, 0.1); color: var(--success-color);">
                         <i class="fas fa-users"></i>
                     </div>
                     <div class="stats-number" th:text="${nbEtudiants}">0</div>
                     <div class="stats-label">Étudiants</div>
                 </div>
+                </a>
             </div>
             <div class="col-xl-3 col-md-6">
-                <div class="stats-card">
+                <a href="/admin/formateur/index" style="text-decoration:none">
+                <div class="stats-card clickable">
                     <div class="stats-icon" style="background: rgba(247, 37, 133, 0.1); color: var(--warning-color);">
                         <i class="fas fa-chalkboard-teacher"></i>
                     </div>
                     <div class="stats-number" th:text="${nbFormateurs}">0</div>
                     <div class="stats-label">Enseignants</div>
                 </div>
+                </a>
             </div>
-           
+            <div class="col-xl-3 col-md-6">
+                <a href="/admin/inscription/index" style="text-decoration:none">
+                <div class="stats-card clickable">
+                    <div class="stats-icon" style="background: rgba(255, 193, 7, 0.1); color: #ffc107;">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <div class="stats-number" th:text="${nbInscriptions}">0</div>
+                    <div class="stats-label">Inscriptions</div>
+                </div>
+                </a>
+            </div>
         </div>
+        <!-- Courbe dynamique d'évolution des inscriptions -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Évolution des inscriptions (année en cours)</h5>
+                        <canvas id="inscriptionChart" height="80"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+         <!-- Histogramme du nombre de cours par groupe (en bas du dashboard) -->
+        <div class="row mb-4 justify-content-center">
+            <div class="col-lg-8 col-md-10 col-12">
+                <div class="card" style="margin-top: 40px;">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Nombre de cours par groupe</h5>
+                        <canvas id="coursParGroupeChart" height="100"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            var inscriptionData = {
+                labels: ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"],
+                datasets: [{
+                    label: "Inscriptions",
+                    data: /*[[${inscriptionParMois}]]*/ [],
+                    fill: false,
+                    borderColor: 'rgb(67, 97, 238)',
+                    tension: 0.1
+                }]
+            };
+            window.addEventListener('DOMContentLoaded', function() {
+                var ctx = document.getElementById('inscriptionChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: inscriptionData,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: true },
+                            title: { display: true, text: 'Évolution des inscriptions par mois' }
+                        }
+                    }
+                });
+            });
+            /*]]>*/
+        </script>
         
      
     </div>
