@@ -38,6 +38,7 @@
                             <th>ID</th>
                             <th>Code du groupe</th>
                             <th>Niveau</th>
+                            <th>Capacité</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -60,17 +61,19 @@
                             <td th:text="${groupe.id}">ID</td>
                             <td th:text="${groupe.code}">Code</td>
                             <td th:text="${groupe.niveau}">Niveau</td>
+                            <td th:text="${groupe.capacite}">Capacité</td>
                             <td>
                                 <div class="d-flex">
                                     <!-- Bouton Éditer -->
                                     <a th:href="@{'/admin/groupe/edit/' + ${groupe.id}}" class="btn-action btn-edit" title="Modifier">
                                         <i class="fas fa-edit"></i>
-                                    </a>
-                                    <!-- Formulaire Supprimer -->
-                                    <form th:action="@{'/admin/groupe/delete/' + ${groupe.id}}" method="get" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce groupe ?')">
-                                        <button type="submit" class="btn-action btn-delete" title="Supprimer">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
+                                    <!-- <tr>
+                                        <th>ID</th>
+                                        <th>Code du groupe</th>
+                                        <th>Niveau</th>
+                                        <th>Capacité</th>
+                                        <th>Actions</th>
+                                    </tr> -->
                                     </form>
                                 </div>
                             </td>

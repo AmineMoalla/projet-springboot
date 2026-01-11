@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/header :: common-head"></head>
+<body>
+    <div th:replace="layout/navbar :: sidebar"></div>
+    <div id="content" style="margin-left:260px; padding:1.5rem; min-height:100vh;">
+        <div class="content-header bg-white rounded-3 p-4 mb-4 shadow-sm">
+            <h1 class="h3 mb-2 text-success">
+                <i class="fas fa-check-circle me-2"></i>Opération réussie
+            </h1>
+        </div>
+        <div class="bg-white rounded-3 p-4 shadow-sm text-center">
+            <p class="lead">L'opération a été réalisée avec succès.</p>
+            <a href="/admin/affectation/index" class="btn btn-primary mt-3">
+                <i class="fas fa-arrow-left me-2"></i>Retour à la liste des affectations
+            </a>
+        </div>
+    </div>
+    <div th:replace="layout/footer :: footer"></div>
+</body>
+</html>

@@ -67,5 +67,11 @@ public class Inscription {
 		this.etudiant = etudiant;
 	}
 
+	public Groupe getGroupe() {
+		return groupe;
+	}
+	public void setGroupe(Groupe groupe) {
+		this.groupe = groupe;
+	}
 
 }

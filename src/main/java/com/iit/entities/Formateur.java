@@ -16,7 +16,7 @@ public class Formateur {
 	private String specialite;
 	private String email;
 
-	@OneToOne()
+	@OneToOne(mappedBy = "formateur")
 	private Cours cours;
 	
 	public Formateur() {

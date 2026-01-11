@@ -11,16 +11,46 @@ import jakarta.validation.Valid;
 import com.iit.entities.Inscription;
 import com.iit.repositories.InscriptionRepository;
 import com.iit.services.InscriptionService;
+import com.iit.services.EtudiantService;
+import com.iit.services.GroupeService;
 
 @Controller
 @RequestMapping("/admin/inscription")
 public class InscriptionController {
 
-    @Autowired
-    private com.iit.services.EtudiantService etudiantService;
+      @Autowired
+    private InscriptionService inscriptionService;
+
+ @Autowired
+    private EtudiantService etudiantService;
 
     @Autowired
-    private com.iit.services.GroupeService groupeService;
+    private GroupeService groupeService;
+
+
+    @GetMapping("/filtre")
+    public String filtreParGroupe(@RequestParam(required = false) String groupeId, Model model) {
+        if (groupeId == null || "__all".equals(groupeId)) {
+            model.addAttribute("inscriptions", inscriptionService.getAll());
+            model.addAttribute("selectedGroupeId", "__all");
+        } else if ("__null".equals(groupeId)) {
+            model.addAttribute("inscriptions", inscriptionService.getSansGroupe());
+            model.addAttribute("selectedGroupeId", null);
+        } else {
+            try {
+                Long gid = Long.valueOf(groupeId);
+                model.addAttribute("inscriptions", inscriptionService.getByGroupeId(gid));
+                model.addAttribute("selectedGroupeId", gid);
+            } catch (NumberFormatException e) {
+                model.addAttribute("inscriptions", inscriptionService.getAll());
+                model.addAttribute("selectedGroupeId", "__all");
+            }
+        }
+        model.addAttribute("groupes", groupeService.getAll());
+        return "inscription/index";
+    }
+
+   
     @PostMapping("/valider/{id}")
     public String validerInscription(@PathVariable Long id) {
         Inscription inscription = inscriptionService.getById(id).orElse(null);
@@ -41,8 +71,7 @@ public class InscriptionController {
         return "redirect:/inscription/index";
     }
 
-    @Autowired
-    private InscriptionService inscriptionService;
+  
 
     @GetMapping("/index")
     public String index(Model model) {
@@ -56,10 +85,31 @@ public class InscriptionController {
         return "inscription/form";
     }
 
+        @PostMapping("/inscrire")
+    public String inscrire(@Valid Inscription i, BindingResult br, Model model) {
+        if (br.hasErrors()) return "inscription/valideInscription";
+        try {
+            inscriptionService.inscrireEtudiant(i);
+        } catch (RuntimeException e) {
+            model.addAttribute("alerteCapacite", e.getMessage());
+            model.addAttribute("inscription", i);
+            model.addAttribute("groupes", groupeService.getAll());
+            return "inscription/valideInscription";
+        }
+        return "confirmation";
+    }
+
     @PostMapping("/save")
-    public String save(@Valid Inscription i, BindingResult br) {
+    public String save(@Valid Inscription i, BindingResult br, Model model) {
         if (br.hasErrors()) return "inscription/form";
-        inscriptionService.save(i);
+        try {
+            inscriptionService.save(i);
+        } catch (RuntimeException e) {
+            model.addAttribute("alerteCapacite", e.getMessage());
+            model.addAttribute("inscription", i);
+            model.addAttribute("groupes", groupeService.getAll());
+            return "inscription/form";
+        }
         return "confirmation";
     }
 

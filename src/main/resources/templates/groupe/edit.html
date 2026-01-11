@@ -119,6 +119,16 @@
                               name="niveau"
                               th:value="${groupe.niveau}"
                               required>
+                      </div>
+                      <div class="mb-3">
+                          <label for="capacite" class="form-label">Capacité *</label>
+                          <input type="number"
+                              class="form-control"
+                              id="capacite"
+                              name="capacite"
+                              th:value="${groupe.capacite}"
+                              min="1"
+                              required>
                 </div>
                 <div class="card mb-3">
                     <div class="card-body">

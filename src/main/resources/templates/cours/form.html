@@ -32,7 +32,7 @@
                            th:value="${cours.nom}" required>
                     <div class="form-text">Le nom doit être unique</div>
                 </div>
-                <div class="mb-3">
+                <!-- <div class="mb-3">
                     <label for="formateur" class="form-label">Formateur associé</label>
                     <select class="form-control" id="formateur" name="formateur">
                         <option th:each="formateur : ${formateurList}"
@@ -41,7 +41,7 @@
                                 th:selected="${cours.formateur != null} ? ${formateur.id} == ${cours.formateur.id} : false">
                         </option>
                     </select>
-                </div>
+                </div> -->
                 <!-- Méthode PUT si édition -->
                 <input type="hidden" th:if="${cours.id != null}" name="_method" value="put" />
                 <div class="d-flex justify-content-between mt-4">

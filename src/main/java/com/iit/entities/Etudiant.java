@@ -41,6 +41,9 @@ public class Etudiant {
 	@JsonIgnore
 	private Collection<Note> notes = new ArrayList<Note>();
 
+
+	
+
 	// ----- Constructeurs ----- //
 
 	public Etudiant() {

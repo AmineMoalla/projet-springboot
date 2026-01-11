@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/header :: common-head"></head>
+<body>
+	<!-- Sidebar -->
+	<div th:replace="layout/navbar :: sidebar"></div>
+	<!-- Main Content -->
+	<div id="content" style="margin-left:260px; padding:1.5rem; min-height:100vh;">
+		<div class="content-header bg-white rounded-3 p-4 mb-4 shadow-sm">
+			<div class="d-flex justify-content-between align-items-center">
+				<div>
+					<h1 class="h3 mb-2">
+						<i class="fas fa-link me-2"></i>Gestion des Affectations
+					</h1>
+					<p class="text-muted mb-0">Liste de toutes les affectations</p>
+				</div>
+				<div>
+					<a href="/admin/affectation/form" class="btn btn-primary">
+						<i class="fas fa-plus me-2"></i>Nouvelle affectation
+					</a>
+				</div>
+			</div>
+		</div>
+		<div class="table-container bg-white rounded-3 p-4 shadow-sm">
+			<div class="table-responsive">
+				<table class="table table-hover align-middle">
+					<thead class="table-light">
+						<tr>
+							<th>#</th>
+							<th>Groupe</th>
+							<th>Cours</th>
+							<th>Année</th>
+							<th>Semestre</th>
+							<th>Volume Horaire</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:if="${#lists.isEmpty(affectationList)}">
+							<td colspan="6">
+								<div class="empty-state text-center p-5">
+									<i class="fas fa-link fa-3x text-secondary mb-3"></i>
+									<h4 class="text-muted">Aucune affectation disponible</h4>
+									<p class="text-muted mb-3">Commencez par créer une affectation</p>
+									<a href="/admin/affectation/form" class="btn btn-primary">
+										<i class="fas fa-plus me-2"></i>Créer une affectation
+									</a>
+								</div>
+							</td>
+						</tr>
+						<tr th:each="affectation,iter : ${affectationList}">
+							<td th:text="${iter.count}">1</td>
+							<td th:text="${affectation.groupe != null ? affectation.groupe.code : 'N/A'}">Groupe</td>
+							<td th:text="${affectation.cours != null ? affectation.cours.nom : 'N/A'}">Cours</td>
+							<td th:text="${affectation.annee}">Année</td>
+							<td th:text="${affectation.semestre}">Semestre</td>
+							<td th:text="${affectation.volumeHoraire}">Volume</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<!-- Footer -->
+	<div th:replace="layout/footer :: footer"></div>
+</body>
+</html>

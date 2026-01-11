@@ -1,4 +1,10 @@
-package com.iit.services;
+
+
+package com.iit.services; 
+
+import com.iit.entities.Groupe;
+import com.iit.repositories.GroupeRepository;
+
 
 
 import com.iit.entities.AffectationCours;
@@ -13,9 +19,19 @@ import java.util.Optional;
 public class AffectationCoursService {
 
     private final AffectationRepository repository;
+    private final GroupeRepository groupeRepository;
 
-    public AffectationCoursService(AffectationRepository repository) {
+    public AffectationCoursService(AffectationRepository repository, GroupeRepository groupeRepository) {
         this.repository = repository;
+        this.groupeRepository = groupeRepository;
+    }
+   
+    public boolean canAffectToGroupe(Long groupeId) {
+        Groupe groupe = groupeRepository.findById(groupeId).orElse(null);
+        if (groupe == null) return false;
+        int capacite = groupe.getCapacite();
+        int nbAffectations = (groupe.getAffectationsCours() != null) ? groupe.getAffectationsCours().size() : 0;
+        return nbAffectations < capacite;
     }
 
     public List<AffectationCours> getAll() {
@@ -36,5 +52,17 @@ public class AffectationCoursService {
     
     public boolean existsById(Long id) {
         return repository.existsById(id);
+    }
+
+
+        public AffectationCours saveWithCapacityCheck(AffectationCours affectation) {
+        if (affectation.getGroupe() == null || affectation.getGroupe().getId() == null) {
+            return null;
+        }
+        Long groupeId = affectation.getGroupe().getId();
+        if (!canAffectToGroupe(groupeId)) {
+            return null;
+        }
+        return repository.save(affectation);
     }
 }

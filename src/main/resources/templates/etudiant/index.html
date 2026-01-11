@@ -19,21 +19,17 @@
                             <th>Prénom</th>
                             <th>Email</th>
                             <th>Date inscription</th>
-                            <th>Action</th>
+                            <!-- <th>Action</th> -->
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="etudiant : ${etudiants}" th:if="${etudiant.inscription == null}">
+                        <tr th:each="etudiant : ${etudiants}">
                             <td th:text="${etudiant.id}"></td>
                             <td th:text="${etudiant.nom}"></td>
                             <td th:text="${etudiant.prenom}"></td>
                             <td th:text="${etudiant.email}"></td>
                             <td th:text="${etudiant.dateInscription}"></td>
-                            <td>
-                                <form th:action="@{'/admin/etudiant/valider/' + ${etudiant.id}}" method="post" style="display:inline;">
-                                    <button type="submit" class="btn btn-success btn-sm">Valider</button>
-                                </form>
-                            </td>
+                            <td></td>
                         </tr>
                     </tbody>
                 </table>

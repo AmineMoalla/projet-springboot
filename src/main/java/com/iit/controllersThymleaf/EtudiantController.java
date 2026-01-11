@@ -16,22 +16,22 @@ import com.iit.services.EtudiantService;
 @RequestMapping("/admin/etudiant")
 public class EtudiantController {
 
-    @Autowired
-    private com.iit.services.InscriptionService inscriptionService;
+    // @Autowired
+    // private com.iit.services.InscriptionService inscriptionService;
 
-    @PostMapping("/valider/{id}")
-    public String validerEtudiant(@PathVariable Long id) {
-        Etudiant etudiant = etudiantService.getById(id).orElse(null);
-        if (etudiant != null) {
-            com.iit.entities.Inscription inscription = new com.iit.entities.Inscription();
-            inscription.setDate(java.time.LocalDate.now());
-            inscription.setEtudiant(etudiant);
-            //inscription.setValide(false);
-            // Groupe reste vide
-            inscriptionService.save(inscription);
-        }
-        return "redirect:/admin/inscription/index";
-    }
+    // @PostMapping("/valider/{id}")
+    // public String validerEtudiant(@PathVariable Long id) {
+    //     Etudiant etudiant = etudiantService.getById(id).orElse(null);
+    //     if (etudiant != null) {
+    //         com.iit.entities.Inscription inscription = new com.iit.entities.Inscription();
+    //         inscription.setDate(java.time.LocalDate.now());
+    //         inscription.setEtudiant(etudiant);
+    //         //inscription.setValide(false);
+    //         // Groupe reste vide
+    //         inscriptionService.save(inscription);
+    //     }
+    //     return "redirect:/admin/inscription/index";
+    // }
 
     @Autowired
     private EtudiantService etudiantService;

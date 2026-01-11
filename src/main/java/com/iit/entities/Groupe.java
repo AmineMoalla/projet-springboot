@@ -28,17 +28,20 @@ public class Groupe {
     @JsonIgnore
     private List<AffectationCours> affectationsCours;
 
+    private int capacite;
+
     
     public Groupe() {}
 
    
 
-    public Groupe( String niveau, String code, List<AffectationCours> affectationsCours, List<Inscription> inscriptions) {
+    public Groupe( String niveau, String code, List<AffectationCours> affectationsCours, List<Inscription> inscriptions, int capacite) {
         super();        
         this.niveau = niveau;
         this.code = code;
         this.affectationsCours = affectationsCours;
         this.inscriptions = inscriptions;
+        this.capacite = capacite;
     }
    public List<Inscription> getInscriptions() {
         return inscriptions;
@@ -81,6 +84,12 @@ public class Groupe {
 		this.id = id;
 	}
 
+public int getCapacite() {  
+        return capacite;
+}
 
+public void setCapacite(int capacite) {
+        this.capacite = capacite;
 
    }
+}

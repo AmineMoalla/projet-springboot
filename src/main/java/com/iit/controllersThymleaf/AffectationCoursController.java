@@ -15,64 +15,67 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import com.iit.entities.AffectationCours;
 import com.iit.repositories.AffectationRepository;
+import com.iit.services.AffectationCoursService;
+import com.iit.repositories.GroupeRepository;
+import com.iit.repositories.CoursRepository;
 
 @Controller
-@RequestMapping("/affectation")
+@RequestMapping("/admin/affectation")
 public class AffectationCoursController {
 
     @Autowired
-    private AffectationRepository affectationRepos;
+    private AffectationCoursService affectationService;
+
+    @Autowired
+    private GroupeRepository groupeRepository;
+
+    @Autowired
+    private CoursRepository coursRepository;
 
     @GetMapping("/index")
-    public String index(Model model,
-                        @RequestParam(name="page", defaultValue="0") int p,
-                        @RequestParam(name="motCle", defaultValue="") String mc) {
+    public String index(Model model)
+    {
+        model.addAttribute("affectationList", affectationService.getAll());
 
-        Page<AffectationCours> pg = affectationRepos.findAll(PageRequest.of(p, 6));
-        int nbrePages = pg.getTotalPages();
-        int[] pages = new int[nbrePages];
-        for (int i = 0; i < nbrePages; i++) pages[i] = i;
 
-        model.addAttribute("pages", pages);
-        model.addAttribute("pageAffectations", pg);
-        model.addAttribute("pageCourante", p);
-        model.addAttribute("motCle", mc);
-
-        return "affectations"; // JSP/Thymeleaf page à créer : affectations.html
+        return "affectation/index"; 
     }
 
     @GetMapping("/form")
     public String formAffectation(Model model) {
         model.addAttribute("affectation", new AffectationCours());
-        return "formAffectation"; // formAffectation.html
+        model.addAttribute("groupes", groupeRepository.findAll());
+        model.addAttribute("cours", coursRepository.findAll());
+        return "affectation/form";
     }
 
     @PostMapping("/save")
     public String save(@Valid AffectationCours affectation, BindingResult bindingResult) {
-        if (bindingResult.hasErrors())
-            return "formAffectation";
-        affectationRepos.save(affectation);
-        return "confirmation"; // confirmation.html
+        if (bindingResult.hasErrors()) {
+            return "affectation/form";
+        }
+        affectationService.save(affectation);
+        return "redirect:/admin/affectation/index";
     }
 
-    @GetMapping("/delete")
-    public String delete(Long id, int page, String motCle) {
-        affectationRepos.deleteById(id);
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable Long id, int page, String motCle) {
+        affectationService.delete(id);
         return "redirect:index?page=" + page + "&motCle=" + motCle;
     }
 
     @GetMapping("/edit")
     public String edit(Model model, @RequestParam(name="id") Long id) {
-        AffectationCours a = affectationRepos.findById(id).orElse(null);
+        AffectationCours a = affectationService.getById(id).orElse(null);
         model.addAttribute("affectation", a);
-        return "editAffectation"; // editAffectation.html
+        return "editAffectation";
     }
 
     @PostMapping("/update")
     public String update(@Valid AffectationCours affectation, BindingResult bindingResult) {
         if (bindingResult.hasErrors())
             return "editAffectation";
-        affectationRepos.save(affectation);
+        affectationService.save(affectation);
         return "confirmation";
     }
 }

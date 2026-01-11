@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/header :: common-head"></head>
+<body>
+    <div th:replace="layout/navbar :: sidebar"></div>
+    <div id="content" style="margin-left:260px; padding:1.5rem; min-height:100vh;">
+        <div class="content-header bg-white rounded-3 p-4 mb-4 shadow-sm">
+            <h1 class="h3 mb-2">
+                <i class="fas fa-link me-2"></i>Nouvelle Affectation
+            </h1>
+        </div>
+        <div class="bg-white rounded-3 p-4 shadow-sm">
+            <form th:action="@{/admin/affectation/save}" th:object="${affectation}" method="post">
+                <div class="mb-3">
+                    <label for="groupe" class="form-label">Groupe</label>
+                    <select class="form-select" id="groupe" name="groupe.id" required>
+                        <option th:each="g : ${groupes}"
+                                th:value="${g.id}"
+                                th:text="${g.code}"
+                                th:attr="data-capacite=${g.capacite},data-affectations=${g.affectationsCours.size()}">
+                        </option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="cours" class="form-label">Cours</label>
+                    <select class="form-select" id="cours" name="cours.id" required>
+                        <option th:each="c : ${cours}" th:value="${c.id}" th:text="${c.nom}"></option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="annee" class="form-label">Année</label>
+                    <input type="text" class="form-control" id="annee" th:field="*{annee}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="semestre" class="form-label">Semestre</label>
+                    <input type="text" class="form-control" id="semestre" th:field="*{semestre}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="volumeHoraire" class="form-label">Volume Horaire</label>
+                    <input type="number" class="form-control" id="volumeHoraire" th:field="*{volumeHoraire}" required>
+                </div>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save me-2"></i>Enregistrer</button>
+                <a href="/admin/affectation/index" class="btn btn-secondary ms-2">Annuler</a>
+            </form>
+        </div>
+    </div>
+    <div th:replace="layout/footer :: footer"></div>
+</body>
+</html>

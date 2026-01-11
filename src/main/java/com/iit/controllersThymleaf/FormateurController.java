@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import com.iit.entities.Formateur;
 import com.iit.repositories.FormateurRepository;
 import com.iit.services.FormateurService;
+import com.iit.entities.Cours;
 
 @Controller
 @RequestMapping("/admin/formateur")
@@ -32,7 +33,11 @@ public class FormateurController {
     @GetMapping("/form")
     public String formFormateur(Model model) {
         model.addAttribute("formateur", new Formateur());
-        model.addAttribute("coursList", coursService.getAll());
+        // Filtrer les cours sans formateur
+        java.util.List<com.iit.entities.Cours> coursSansFormateur = coursService.getAll().stream()
+            .filter(c -> c.getFormateur() == null)
+            .toList();
+        model.addAttribute("coursList", coursSansFormateur);
         return "formateur/form";
     }
 
@@ -41,11 +46,18 @@ public class FormateurController {
                        BindingResult br,
                        @RequestParam(required = false) Long cours) {
         if (br.hasErrors()) return "formateur/form";
+       Cours c = null;
         if (cours != null) {
-            com.iit.entities.Cours c = coursService.getById(cours).orElse(null);
-            f.setCours(c);
+            c = coursService.getById(cours).orElse(null);
         }
+        // 1. Sauvegarder le formateur sans cours
+        f.setCours(c);
         formateurService.save(f);
+        // 2. Associer le formateur au cours et sauvegarder le cours
+        if (c != null) {
+            c.setFormateur(f);
+            coursService.save(c);
+        }
         return "redirect:/admin/formateur/index";
     }
 
@@ -80,6 +92,12 @@ public class FormateurController {
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Long id, RedirectAttributes ra) {
         if (id != null && formateurService.existsById(id)) {
+            Formateur formateur = formateurService.getById(id);
+            if (formateur != null && formateur.getCours() != null) {
+                Cours cours = formateur.getCours();
+                cours.setFormateur(null);
+                coursService.save(cours);
+            }
             formateurService.delete(id);
             ra.addFlashAttribute("success", "Formateur supprimé avec succès!");
         } else {

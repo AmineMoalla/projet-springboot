@@ -27,6 +27,7 @@ public class Cours {
 	private Collection<Note> notes = new ArrayList<Note>();
 
 	@OneToOne()
+	@JoinColumn(name = "formateur_id")
 	private Formateur formateur;
 
 	public Cours() {
