@@ -25,6 +25,8 @@ public class Etudiant {
 	@Email
 	private String email;
 
+	private String specialite;
+
 	@Column(name = "date_inscription")
 	private LocalDate dateInscription;
 
@@ -49,11 +51,12 @@ public class Etudiant {
 	public Etudiant() {
 	}
 
-	public Etudiant(String matricule, String nom, String prenom, String email, LocalDate dateInscription, Inscription inscription) {
+	public Etudiant(String matricule, String nom, String prenom, String email, String specialite, LocalDate dateInscription, Inscription inscription) {
 		this.matricule = matricule;
 		this.nom = nom;
 		this.prenom = prenom;
 		this.email = email;
+		this.specialite = specialite;
 		this.dateInscription = dateInscription;
 		this.inscription = inscription;
 		
@@ -118,6 +121,14 @@ public class Etudiant {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getSpecialite() {
+		return specialite;
+	}
+
+	public void setSpecialite(String specialite) {
+		this.specialite = specialite;
 	}
 
 	public LocalDate getDateInscription() {

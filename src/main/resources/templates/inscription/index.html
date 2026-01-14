@@ -5,16 +5,7 @@
         <div th:replace="layout/navbar :: sidebar"></div>
         <div id="content" style="margin-left:260px; padding:1.5rem; min-height:100vh;">
             <div class="content-header bg-white rounded-3 p-4 mb-4 shadow-sm">
-                                <form th:action="@{/admin/inscription/filtre}" method="get" class="mb-3 d-flex align-items-center">
-                                    <label for="groupeId" class="form-label me-2 mb-0">Filtrer par groupe :</label>
-                                    <select id="groupeId" name="groupeId" class="form-select w-auto me-2">
-                                        <option th:value="'__all'" th:selected="${selectedGroupeId == '__all'}">Tous</option>
-                                        <option th:value="'__null'" th:selected="${selectedGroupeId == null}">Sans groupe</option>
-                                        <option th:each="groupe : ${groupes}" th:value="${groupe.id}" th:text="${groupe.code}" th:selected="${selectedGroupeId} == ${groupe.id}"></option>
-                                    </select>
-                                    <button type="submit" class="btn btn-primary btn-sm">Filtrer</button>
-                                </form>
-                <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex justify-content-between align-items-center mb-3">
                     <div>
                         <h1 class="h3 mb-2">
                             <i class="fas fa-users me-2"></i>Gestion des Inscriptions
@@ -22,6 +13,30 @@
                         <p class="text-muted mb-0">Liste de toutes les inscriptions</p>
                     </div>
                 </div>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="d-flex align-items-center">
+                        <label for="filtreSpecialite" class="form-label me-2 mb-0">Spécialité :</label>
+                        <select id="filtreSpecialite" class="form-select w-auto">
+                            <option value="">Tous</option>
+                            <option th:each="spec : ${specialites}" th:value="${spec.name()}" th:text="${spec.libelle}"></option>
+                        </select>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <label for="filtreGroupe" class="form-label me-2 mb-0">Groupe :</label>
+                        <select id="filtreGroupe" class="form-select w-auto">
+                            <option value="">Tous</option>
+                            <option th:each="groupe : ${groupes}" 
+                                    th:value="${groupe.id}" 
+                                    th:text="${groupe.code}"
+                                    th:data-specialite="${groupe.specialite != null ? groupe.specialite.name() : ''}"></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <!-- Messages flash -->
+            <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <span th:text="${success}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
             <div class="table-container bg-white rounded-3 p-4 shadow-sm">
                 <div class="table-responsive">
@@ -35,18 +50,14 @@
                                 <!-- <th>Valide</th> -->
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr th:each="inscription : ${inscriptions}">
+                        <tbody id="inscriptionsTableBody">
+                            <tr th:each="inscription : ${inscriptions}" 
+                                th:data-groupe-id="${inscription.groupe != null ? inscription.groupe.id : ''}"
+                                th:data-specialite="${inscription.groupe != null && inscription.groupe.specialite != null ? inscription.groupe.specialite.name() : ''}">
                                 <td th:text="${inscription.id}"></td>
                                 <td th:text="${inscription.date}"></td>
                                 <td th:text="${inscription.etudiant != null ? inscription.etudiant.nom : 'N/A'}"></td>
                                 <td th:text="${inscription.groupe != null ? (inscription.groupe.code != null ? inscription.groupe.code : 'N/A') : 'N/A'}"></td>
-                                <!-- <td>
-                                    <span th:text="${inscription.valide ? 'Oui' : 'Non'}"></span>
-                                    <form th:if="${!inscription.valide}" th:action="@{'/inscription/valider/' + ${inscription.id}}" method="post" style="display:inline;">
-                                        <button type="submit" class="btn btn-success btn-sm ms-2">Valider</button>
-                                    </form>
-                                </td> -->
                             </tr>
                         </tbody>
                     </table>
@@ -54,5 +65,58 @@
             </div>
         </div>
         <div th:replace="layout/footer :: footer"></div>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var filtreSpecialite = document.getElementById('filtreSpecialite');
+            var filtreGroupe = document.getElementById('filtreGroupe');
+            var allGroupeOptions = Array.from(filtreGroupe.options);
+            var tableBody = document.getElementById('inscriptionsTableBody');
+            var allRows = Array.from(tableBody.querySelectorAll('tr'));
+            
+            // Filtrer les groupes par spécialité
+            filtreSpecialite.addEventListener('change', function() {
+                var selectedSpec = this.value;
+                
+                // Réinitialiser le select groupe
+                filtreGroupe.innerHTML = '';
+                var optionTous = document.createElement('option');
+                optionTous.value = '';
+                optionTous.text = 'Tous';
+                filtreGroupe.appendChild(optionTous);
+                
+                allGroupeOptions.forEach(function(opt) {
+                    if (opt.value === '' || !selectedSpec || opt.getAttribute('data-specialite') === selectedSpec) {
+                        if (opt.value !== '') {
+                            var newOpt = opt.cloneNode(true);
+                            filtreGroupe.appendChild(newOpt);
+                        }
+                    }
+                });
+                
+                // Filtrer le tableau
+                filtrerTableau();
+            });
+            
+            // Filtrer le tableau par groupe
+            filtreGroupe.addEventListener('change', function() {
+                filtrerTableau();
+            });
+            
+            function filtrerTableau() {
+                var selectedSpec = filtreSpecialite.value;
+                var selectedGroupe = filtreGroupe.value;
+                
+                allRows.forEach(function(row) {
+                    var rowSpecialite = row.getAttribute('data-specialite');
+                    var rowGroupeId = row.getAttribute('data-groupe-id');
+                    
+                    var showBySpec = !selectedSpec || rowSpecialite === selectedSpec;
+                    var showByGroupe = !selectedGroupe || rowGroupeId === selectedGroupe;
+                    
+                    row.style.display = (showBySpec && showByGroupe) ? '' : 'none';
+                });
+            }
+        });
+        </script>
     </body>
 </html>

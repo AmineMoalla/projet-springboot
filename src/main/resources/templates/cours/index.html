@@ -20,7 +20,7 @@
                             <p class="text-muted mb-0">Liste de tous les cours</p>
                         </div>
                         <div>
-                            <a href="/admin/cours/new" class="btn btn-primary">
+                            <a href="/admin/cours/new" class="btn btn-primary" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 600; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); transition: all 0.3s ease;">
                                 <i class="fas fa-plus me-2"></i>Nouveau cours
                             </a>
                         </div>
@@ -73,16 +73,18 @@
                                         <span th:text="${cours.notes != null ? cours.notes.size() : 0}">0</span> note(s)
                                     </td>
                                     <td>
-                                        <div class="d-flex">
-                                            <!-- Bouton Éditer -->
-                                            <a th:href="@{'/admin/cours/edit/' + ${cours.id}}" 
-                                               class="btn-action btn-edit"
-                                               title="Modifier">
+                                        <div class="d-flex gap-2">
+                                            <a th:href="@{'/admin/cours/edit/' + ${cours.id}}"
+                                               class="p-2 bg-yellow-100 text-warning rounded-circle hover-bg-yellow-200 transition border-0"
+                                               style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;"
+                                               title="Éditer">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-                                            <!-- Formulaire Supprimer -->
-                                            <form th:action="@{'/admin/cours/delete/' + ${cours.id}}" method="get" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce cours ?')">
-                                                <button type="submit" class="btn-action btn-delete" title="Supprimer">
+                                            <form th:action="@{'/admin/cours/delete/' + ${cours.id}}" method="get" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce cours ?')">
+                                                <button type="submit"
+                                                        class="p-2 bg-red-100 text-danger rounded-circle hover-bg-red-200 transition border-0"
+                                                        style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;"
+                                                        title="Supprimer">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>

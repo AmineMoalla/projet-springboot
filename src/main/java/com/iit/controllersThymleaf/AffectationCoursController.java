@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;  
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
 import com.iit.entities.AffectationCours;
@@ -50,32 +51,40 @@ public class AffectationCoursController {
     }
 
     @PostMapping("/save")
-    public String save(@Valid AffectationCours affectation, BindingResult bindingResult) {
+    public String save(@Valid AffectationCours affectation, BindingResult bindingResult, RedirectAttributes ra) {
         if (bindingResult.hasErrors()) {
             return "affectation/form";
         }
         affectationService.save(affectation);
+        ra.addFlashAttribute("success", "Affectation créée avec succès!");
         return "redirect:/admin/affectation/index";
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable Long id, int page, String motCle) {
+    public String delete(@PathVariable Long id, RedirectAttributes ra) {
         affectationService.delete(id);
-        return "redirect:index?page=" + page + "&motCle=" + motCle;
+        ra.addFlashAttribute("success", "Affectation supprimée avec succès!");
+        return "redirect:/admin/affectation/index";
     }
 
     @GetMapping("/edit")
     public String edit(Model model, @RequestParam(name="id") Long id) {
         AffectationCours a = affectationService.getById(id).orElse(null);
         model.addAttribute("affectation", a);
-        return "editAffectation";
+        model.addAttribute("groupes", groupeRepository.findAll());
+        model.addAttribute("cours", coursRepository.findAll());
+        return "affectation/edit";
     }
 
     @PostMapping("/update")
-    public String update(@Valid AffectationCours affectation, BindingResult bindingResult) {
-        if (bindingResult.hasErrors())
-            return "editAffectation";
+    public String update(@Valid AffectationCours affectation, BindingResult bindingResult, Model model, RedirectAttributes ra) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("groupes", groupeRepository.findAll());
+            model.addAttribute("cours", coursRepository.findAll());
+            return "affectation/edit";
+        }
         affectationService.save(affectation);
-        return "confirmation";
+        ra.addFlashAttribute("success", "Affectation mise à jour avec succès!");
+        return "redirect:/admin/affectation/index";
     }
 }

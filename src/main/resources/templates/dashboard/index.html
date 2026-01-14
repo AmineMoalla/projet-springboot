@@ -1,160 +1,244 @@
-        <!-- ...existing code... -->
-
-       
-
-        <script th:inline="javascript">
-            /*<![CDATA[*/
-            var inscriptionData = {
-                labels: ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"],
-                datasets: [{
-                    label: "Inscriptions",
-                    data: /*[[${inscriptionParMois}]]*/ [],
-                    fill: false,
-                    borderColor: 'rgb(67, 97, 238)',
-                    tension: 0.1
-                }]
-            };
-            var coursParGroupeData = {
-                labels: /*[[${groupeLabels}]]*/ [],
-                datasets: [{
-                    label: "Cours par groupe",
-                    data: /*[[${coursParGroupe}]]*/ [],
-                    backgroundColor: 'rgba(76, 201, 240, 0.7)',
-                    borderColor: 'rgba(67, 97, 238, 1)',
-                    borderWidth: 2,
-                    maxBarThickness: 60
-                }]
-            };
-            window.addEventListener('DOMContentLoaded', function() {
-                var ctx1 = document.getElementById('inscriptionChart').getContext('2d');
-                new Chart(ctx1, {
-                    type: 'line',
-                    data: inscriptionData,
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: { display: true },
-                            title: { display: true, text: 'Évolution des inscriptions par mois' }
-                        }
-                    }
-                });
-                var ctx2 = document.getElementById('coursParGroupeChart').getContext('2d');
-                new Chart(ctx2, {
-                    type: 'bar',
-                    data: coursParGroupeData,
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: { display: false },
-                            title: { display: true, text: 'Nombre de cours par groupe' }
-                        },
-                        scales: {
-                            y: { beginAtZero: true }
-                        },
-                        indexAxis: 'x',
-                        layout: { padding: 20 }
-                    }
-                });
-            });
-            /*]]>*/
-        </script>
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout/header :: common-head"></head>
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .dashboard-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            color: white;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+        }
+        .dashboard-header h1 {
+            font-weight: 800;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .dashboard-header p {
+            opacity: 0.9;
+            margin: 0;
+        }
+        .stats-card-new {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+        .stats-card-new:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+        .stats-card-new::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            border-radius: 20px 20px 0 0;
+        }
+        .stats-card-new.cours::before { background: linear-gradient(90deg, #667eea, #764ba2); }
+        .stats-card-new.etudiants::before { background: linear-gradient(90deg, #11998e, #38ef7d); }
+        .stats-card-new.formateurs::before { background: linear-gradient(90deg, #eb3349, #f45c43); }
+        .stats-card-new.inscriptions::before { background: linear-gradient(90deg, #f7971e, #ffd200); }
+        
+        .stats-icon-new {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .stats-icon-new.cours { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+        .stats-icon-new.etudiants { background: linear-gradient(135deg, #11998e, #38ef7d); color: white; }
+        .stats-icon-new.formateurs { background: linear-gradient(135deg, #eb3349, #f45c43); color: white; }
+        .stats-icon-new.inscriptions { background: linear-gradient(135deg, #f7971e, #ffd200); color: white; }
+        
+        .stats-number-new {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #1a1a2e;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+        .stats-label-new {
+            color: #6c757d;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .chart-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: none;
+            overflow: hidden;
+        }
+        .chart-card .card-header {
+            background: transparent;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding: 1.5rem;
+        }
+        .chart-card .card-title {
+            font-weight: 700;
+            color: #1a1a2e;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .chart-card .card-title i {
+            color: #667eea;
+        }
+        .chart-card .card-body {
+            padding: 1.5rem;
+        }
+        .date-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            backdrop-filter: blur(10px);
+        }
+        .avatar-header {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            backdrop-filter: blur(10px);
+        }
+    </style>
 <body>
     <!-- Sidebar -->
     <div th:replace="layout/navbar :: sidebar"></div>
     <!-- Main Content -->
     <div id="content">
-        <!-- Header -->
-        <div class="content-header">
+        <!-- Header amélioré -->
+        <div class="dashboard-header">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <h1 class="h3 mb-2" style="font-weight: 700;">Tableau de bord</h1>
-                    <p class="text-muted mb-0">Bienvenue dans le panel d'administration YFA School</p>
+                    <h1><i class="fas fa-chart-line me-2"></i>Tableau de bord</h1>
+                    <p>Bienvenue dans le panel d'administration YFA School</p>
                 </div>
-                <div class="d-flex align-items-center">
-                    <div class="me-3 text-end">
-                        <small class="text-muted d-block">Connecté en tant que</small>
-                        <strong>Administrateur</strong>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="date-badge">
+                        <i class="fas fa-calendar-alt me-2"></i>
+                        <span th:text="${#temporals.format(#temporals.createNow(), 'dd MMMM yyyy')}">14 Janvier 2026</span>
                     </div>
-                    <div class="avatar">
-                        <div style="width: 45px; height: 45px; background: linear-gradient(135deg, var(--primary-color), var(--success-color)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
-                            A
-                        </div>
-                    </div>
+                    <div class="avatar-header">A</div>
                 </div>
             </div>
         </div>
         
-        <!-- Stats Cards dynamiques -->
+        <!-- Stats Cards améliorées -->
         <div class="row g-4 mb-4">
             <div class="col-xl-3 col-md-6">
                 <a href="/admin/cours" style="text-decoration:none">
-                <div class="stats-card clickable">
-                    <div class="stats-icon" style="background: rgba(67, 97, 238, 0.1); color: var(--primary-color);">
+                <div class="stats-card-new cours">
+                    <div class="stats-icon-new cours">
                         <i class="fas fa-book"></i>
                     </div>
-                    <div class="stats-number" th:text="${nbCours}">0</div>
-                    <div class="stats-label">Cours Actifs</div>
+                    <div class="stats-number-new" th:text="${nbCours}">0</div>
+                    <div class="stats-label-new">Cours Actifs</div>
                 </div>
                 </a>
             </div>
             <div class="col-xl-3 col-md-6">
                 <a href="/admin/etudiant/index" style="text-decoration:none">
-                <div class="stats-card clickable">
-                    <div class="stats-icon" style="background: rgba(76, 201, 240, 0.1); color: var(--success-color);">
+                <div class="stats-card-new etudiants">
+                    <div class="stats-icon-new etudiants">
                         <i class="fas fa-users"></i>
                     </div>
-                    <div class="stats-number" th:text="${nbEtudiants}">0</div>
-                    <div class="stats-label">Étudiants</div>
+                    <div class="stats-number-new" th:text="${nbEtudiants}">0</div>
+                    <div class="stats-label-new">Étudiants</div>
                 </div>
                 </a>
             </div>
             <div class="col-xl-3 col-md-6">
                 <a href="/admin/formateur/index" style="text-decoration:none">
-                <div class="stats-card clickable">
-                    <div class="stats-icon" style="background: rgba(247, 37, 133, 0.1); color: var(--warning-color);">
+                <div class="stats-card-new formateurs">
+                    <div class="stats-icon-new formateurs">
                         <i class="fas fa-chalkboard-teacher"></i>
                     </div>
-                    <div class="stats-number" th:text="${nbFormateurs}">0</div>
-                    <div class="stats-label">Enseignants</div>
+                    <div class="stats-number-new" th:text="${nbFormateurs}">0</div>
+                    <div class="stats-label-new">Enseignants</div>
                 </div>
                 </a>
             </div>
             <div class="col-xl-3 col-md-6">
                 <a href="/admin/inscription/index" style="text-decoration:none">
-                <div class="stats-card clickable">
-                    <div class="stats-icon" style="background: rgba(255, 193, 7, 0.1); color: #ffc107;">
+                <div class="stats-card-new inscriptions">
+                    <div class="stats-icon-new inscriptions">
                         <i class="fas fa-user-plus"></i>
                     </div>
-                    <div class="stats-number" th:text="${nbInscriptions}">0</div>
-                    <div class="stats-label">Inscriptions</div>
+                    <div class="stats-number-new" th:text="${nbInscriptions}">0</div>
+                    <div class="stats-label-new">Inscriptions</div>
                 </div>
                 </a>
             </div>
         </div>
+
         <!-- Courbe dynamique d'évolution des inscriptions -->
         <div class="row mb-4">
             <div class="col-12">
-                <div class="card">
+                <div class="chart-card">
+                    <div class="card-header">
+                        <h5 class="card-title"><i class="fas fa-chart-line"></i> Évolution des inscriptions (année en cours)</h5>
+                    </div>
                     <div class="card-body">
-                        <h5 class="card-title">Évolution des inscriptions (année en cours)</h5>
                         <canvas id="inscriptionChart" height="80"></canvas>
                     </div>
                 </div>
             </div>
         </div>
 
-         <!-- Histogramme du nombre de cours par groupe (en bas du dashboard) -->
+        <!-- Histogramme du nombre de cours par groupe -->
         <div class="row mb-4 justify-content-center">
-            <div class="col-lg-8 col-md-10 col-12">
-                <div class="card" style="margin-top: 40px;">
+            <div class="col-lg-10 col-12">
+                <div class="chart-card">
+                    <div class="card-header">
+                        <h5 class="card-title"><i class="fas fa-chart-bar"></i> Nombre de cours par groupe</h5>
+                    </div>
                     <div class="card-body text-center">
-                        <h5 class="card-title">Nombre de cours par groupe</h5>
                         <canvas id="coursParGroupeChart" height="100"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Graphiques inscriptions par spécialité et par niveau -->
+        <div class="row mb-4">
+            <div class="col-lg-6 col-md-12 mb-4">
+                <div class="chart-card">
+                    <div class="card-header">
+                        <h5 class="card-title"><i class="fas fa-graduation-cap"></i> Inscriptions par Spécialité</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <canvas id="inscriptionsParSpecialiteChart" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12 mb-4">
+                <div class="chart-card">
+                    <div class="card-header">
+                        <h5 class="card-title"><i class="fas fa-layer-group"></i> Inscriptions par Niveau</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <canvas id="inscriptionsParNiveauChart" height="250"></canvas>
                     </div>
                 </div>
             </div>
@@ -182,6 +266,115 @@
                         plugins: {
                             legend: { display: true },
                             title: { display: true, text: 'Évolution des inscriptions par mois' }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1,
+                                    precision: 0
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                // Graphique cours par groupe
+                var groupeLabels = /*[[${groupeLabels}]]*/ [];
+                var coursParGroupe = /*[[${coursParGroupe}]]*/ [];
+                var ctx2 = document.getElementById('coursParGroupeChart').getContext('2d');
+                new Chart(ctx2, {
+                    type: 'bar',
+                    data: {
+                        labels: groupeLabels,
+                        datasets: [{
+                            label: 'Cours par groupe',
+                            data: coursParGroupe,
+                            backgroundColor: 'rgba(76, 201, 240, 0.7)',
+                            borderColor: 'rgba(67, 97, 238, 1)',
+                            borderWidth: 2,
+                            maxBarThickness: 60
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: false },
+                            title: { display: true, text: 'Nombre de cours par groupe' }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1,
+                                    precision: 0
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                // Graphique inscriptions par spécialité (Doughnut)
+                var specialiteLabels = /*[[${specialiteLabels}]]*/ [];
+                var inscriptionsParSpecialite = /*[[${inscriptionsParSpecialite}]]*/ [];
+                var ctx3 = document.getElementById('inscriptionsParSpecialiteChart').getContext('2d');
+                new Chart(ctx3, {
+                    type: 'doughnut',
+                    data: {
+                        labels: specialiteLabels,
+                        datasets: [{
+                            data: inscriptionsParSpecialite,
+                            backgroundColor: [
+                                'rgba(67, 97, 238, 0.8)',
+                                'rgba(76, 201, 240, 0.8)',
+                                'rgba(247, 37, 133, 0.8)',
+                                'rgba(255, 193, 7, 0.8)',
+                                'rgba(40, 167, 69, 0.8)',
+                                'rgba(220, 53, 69, 0.8)',
+                                'rgba(108, 117, 125, 0.8)',
+                                'rgba(23, 162, 184, 0.8)'
+                            ],
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'bottom' },
+                            title: { display: false }
+                        }
+                    }
+                });
+                
+                // Graphique inscriptions par niveau (Pie)
+                var niveauLabels = /*[[${niveauLabels}]]*/ [];
+                var niveauLabelsFormatted = niveauLabels.map(function(label) { return 'Niveau ' + label; });
+                var inscriptionsParNiveau = /*[[${inscriptionsParNiveau}]]*/ [];
+                var ctx4 = document.getElementById('inscriptionsParNiveauChart').getContext('2d');
+                new Chart(ctx4, {
+                    type: 'pie',
+                    data: {
+                        labels: niveauLabelsFormatted,
+                        datasets: [{
+                            data: inscriptionsParNiveau,
+                            backgroundColor: [
+                                'rgba(67, 97, 238, 0.8)',
+                                'rgba(76, 201, 240, 0.8)',
+                                'rgba(247, 37, 133, 0.8)',
+                                'rgba(255, 193, 7, 0.8)',
+                                'rgba(40, 167, 69, 0.8)',
+                                'rgba(220, 53, 69, 0.8)',
+                                'rgba(108, 117, 125, 0.8)',
+                                'rgba(23, 162, 184, 0.8)'
+                            ],
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'bottom' },
+                            title: { display: false }
                         }
                     }
                 });

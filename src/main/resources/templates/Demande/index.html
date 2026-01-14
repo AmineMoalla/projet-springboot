@@ -19,6 +19,7 @@
                             <th>Nom</th>
                             <th>Prénom</th>
                             <th>Email</th>
+                            <th>Spécialité</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -27,12 +28,14 @@
                             <td th:text="${etudiant.nom}"></td>
                             <td th:text="${etudiant.prenom}"></td>
                             <td th:text="${etudiant.email}"></td>
+                            <td th:text="${etudiant.specialite != null ? etudiant.specialite : 'N/A'}"></td>
                             <td>
                                 <button type="button" class="btn btn-success btn-sm" 
+                                    style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border: none; padding: 0.5rem 1rem; border-radius: 10px; font-weight: 600; box-shadow: 0 4px 15px rgba(17, 153, 142, 0.4); transition: all 0.3s ease;"
                                     data-bs-toggle="modal" 
                                     data-bs-target="#valideInscriptionModal"
-                                    th:attr="data-id=${etudiant.id},data-nom=${etudiant.nom},data-prenom=${etudiant.prenom},data-email=${etudiant.email}">
-                                    Valider
+                                    th:attr="data-id=${etudiant.id},data-nom=${etudiant.nom},data-prenom=${etudiant.prenom},data-email=${etudiant.email},data-specialite=${etudiant.specialite != null ? etudiant.specialite : ''}">
+                                    <i class="fas fa-check me-1"></i>Valider
                                 </button>
                             </td>
                         </tr>
@@ -63,8 +66,12 @@
                         <div class="mb-3">
                             <label class="form-label">Groupe</label>
                             <select class="form-select" id="modalGroupeId" name="groupeId" required>
-                                <option th:each="groupe : ${groupes}" th:value="${groupe.id}" th:text="${groupe.code}"></option>
+                                <option th:each="groupe : ${groupes}" 
+                                        th:value="${groupe.id}" 
+                                        th:text="${groupe.code + ' - ' + (groupe.specialite != null ? groupe.specialite.libelle : 'Sans spécialité')}"
+                                        th:data-specialite="${groupe.specialite != null ? groupe.specialite.name() : ''}"></option>
                             </select>
+                            <div id="alerteCapacite" th:if="${alerteCapacite}" class="alert alert-danger mt-2" th:text="${alerteCapacite}"></div>
                         </div>
                         <input type="hidden" name="idEtudiant" id="modalEtudiantId" />
                     </div>
@@ -77,19 +84,93 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
+    <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function() {
         var modal = document.getElementById('valideInscriptionModal');
+        var groupeSelect = document.getElementById('modalGroupeId');
+        var allOptions = Array.from(groupeSelect.options).map(opt => ({
+            value: opt.value,
+            text: opt.text,
+            specialite: opt.getAttribute('data-specialite')
+        }));
+        
         modal.addEventListener('show.bs.modal', function (event) {
             var button = event.relatedTarget;
-            var id = button.getAttribute('data-id');
-            var nom = button.getAttribute('data-nom');
-            var prenom = button.getAttribute('data-prenom');
-            // Remplir les champs du modal
-            document.getElementById('modalEtudiantId').value = id;
-            document.getElementById('modalEtudiantNom').value = nom;
-            document.getElementById('modalEtudiantPrenom').value = prenom;
+            if (button) {
+                var id = button.getAttribute('data-id');
+                var nom = button.getAttribute('data-nom');
+                var prenom = button.getAttribute('data-prenom');
+                var specialiteEtudiant = button.getAttribute('data-specialite');
+                
+                // Remplir les champs du modal
+                document.getElementById('modalEtudiantId').value = id;
+                document.getElementById('modalEtudiantNom').value = nom;
+                document.getElementById('modalEtudiantPrenom').value = prenom;
+                
+                // Filtrer les groupes par spécialité
+                groupeSelect.innerHTML = '';
+                allOptions.forEach(function(opt) {
+                    if (opt.specialite === specialiteEtudiant || !specialiteEtudiant) {
+                        var option = document.createElement('option');
+                        option.value = opt.value;
+                        option.text = opt.text;
+                        option.setAttribute('data-specialite', opt.specialite);
+                        groupeSelect.appendChild(option);
+                    }
+                });
+                
+                // Si aucun groupe ne correspond, afficher un message
+                if (groupeSelect.options.length === 0) {
+                    var option = document.createElement('option');
+                    option.value = '';
+                    option.text = 'Aucun groupe disponible pour cette spécialité';
+                    option.disabled = true;
+                    groupeSelect.appendChild(option);
+                }
+            }
         });
+        
+        // Fonction pour filtrer les groupes par spécialité
+        function filtrerGroupesParSpecialite(specialiteEtudiant) {
+            groupeSelect.innerHTML = '';
+            allOptions.forEach(function(opt) {
+                if (opt.specialite === specialiteEtudiant || !specialiteEtudiant) {
+                    var option = document.createElement('option');
+                    option.value = opt.value;
+                    option.text = opt.text;
+                    option.setAttribute('data-specialite', opt.specialite);
+                    groupeSelect.appendChild(option);
+                }
+            });
+            
+            // Si aucun groupe ne correspond, afficher un message
+            if (groupeSelect.options.length === 0) {
+                var option = document.createElement('option');
+                option.value = '';
+                option.text = 'Aucun groupe disponible pour cette spécialité';
+                option.disabled = true;
+                groupeSelect.appendChild(option);
+            }
+        }
+        
+        // Ouvrir le modal automatiquement si erreur
+        var showModal = /*[[${showModal != null && showModal}]]*/ false;
+        if (showModal) {
+            var etudiantId = /*[[${etudiantErreur != null ? etudiantErreur.id : null}]]*/ null;
+            var etudiantNom = /*[[${etudiantErreur != null ? etudiantErreur.nom : ''}]]*/ '';
+            var etudiantPrenom = /*[[${etudiantErreur != null ? etudiantErreur.prenom : ''}]]*/ '';
+            var etudiantSpecialite = /*[[${etudiantErreur != null ? etudiantErreur.specialite : ''}]]*/ '';
+            
+            document.getElementById('modalEtudiantId').value = etudiantId;
+            document.getElementById('modalEtudiantNom').value = etudiantNom;
+            document.getElementById('modalEtudiantPrenom').value = etudiantPrenom;
+            
+            // Filtrer les groupes par spécialité de l'étudiant en erreur
+            filtrerGroupesParSpecialite(etudiantSpecialite);
+            
+            var bsModal = new bootstrap.Modal(document.getElementById('valideInscriptionModal'));
+            bsModal.show();
+        }
     });
     </script>
 </body>

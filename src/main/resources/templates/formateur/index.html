@@ -18,7 +18,7 @@
                     <p class="text-muted mb-0">Liste de tous les formateurs</p>
                 </div>
                 <div>
-                    <a href="/admin/formateur/form" class="btn btn-primary">
+                    <a href="/admin/formateur/form" class="btn btn-primary" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 600; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); transition: all 0.3s ease;">
                         <i class="fas fa-plus me-2"></i>Nouveau formateur
                     </a>
                 </div>
@@ -55,7 +55,7 @@
                                     <i class="fas fa-chalkboard-teacher fa-3x text-secondary mb-3"></i>
                                     <h4 class="text-muted">Aucun formateur disponible</h4>
                                     <p class="text-muted mb-3">Commencez par créer votre premier formateur</p>
-                                    <a href="/admin/formateur/form" class="btn btn-primary">
+                                    <a href="/admin/formateur/form" class="btn btn-primary" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 600; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); transition: all 0.3s ease;">
                                         <i class="fas fa-plus me-2"></i>Créer un formateur
                                     </a>
                                 </div>
@@ -69,14 +69,18 @@
                             <td th:text="${formateur.specialite}"></td>
                             <td th:text="${formateur.cours != null ? formateur.cours.nom : 'Non attribué'}"></td>
                             <td>
-                                <div class="d-flex">
+                                <div class="d-flex gap-2">
                                     <a th:href="@{'/admin/formateur/edit/' + ${formateur.id}}"
-                                       class="btn-action btn-edit"
-                                       title="Modifier">
+                                       class="p-2 bg-yellow-100 text-warning rounded-circle hover-bg-yellow-200 transition border-0"
+                                       style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;"
+                                       title="Éditer">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <form th:action="@{'/admin/formateur/delete/' + ${formateur.id}}" method="get" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce formateur ?')">
-                                        <button type="submit" class="btn-action btn-delete" title="Supprimer">
+                                    <form th:action="@{'/admin/formateur/delete/' + ${formateur.id}}" method="get" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce formateur ?')">
+                                        <button type="submit"
+                                                class="p-2 bg-red-100 text-danger rounded-circle hover-bg-red-200 transition border-0"
+                                                style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;"
+                                                title="Supprimer">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>

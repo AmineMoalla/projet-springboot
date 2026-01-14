@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -55,7 +56,7 @@ public class DemandeController {
     }
 
     @PostMapping("/valider")
-    public String validerInscription(@RequestParam Long idEtudiant, @RequestParam Long groupeId, Model model) {
+    public String validerInscription(@RequestParam Long idEtudiant, @RequestParam Long groupeId, Model model, RedirectAttributes ra) {
         Etudiant etudiant = etudiantService.getById(idEtudiant).orElse(null);
         Groupe groupe = groupeService.getById(groupeId).orElse(null);
         if (etudiant != null && groupe != null) {
@@ -88,11 +89,18 @@ public class DemandeController {
                     LocalDateTime.now()
                 );
                 notificationService.save(notification);
+                ra.addFlashAttribute("success", "Inscription validée avec succès pour " + etudiant.getNom() + " dans le groupe " + groupe.getCode() + "!");
             } catch (RuntimeException e) {
-                model.addAttribute("etudiant", etudiant);
+                List<Etudiant> etudiantsSansInscription = etudiantService.getAll()
+                    .stream()
+                    .filter(et -> et.getInscription() == null)
+                    .collect(Collectors.toList());
+                model.addAttribute("etudiantsSansInscription", etudiantsSansInscription);
                 model.addAttribute("groupes", groupeService.getAll());
                 model.addAttribute("alerteCapacite", e.getMessage());
-                return "inscription/valideInscription";
+                model.addAttribute("etudiantErreur", etudiant);
+                model.addAttribute("showModal", true);
+                return "Demande/index";
             }
         }
         return "redirect:/admin/inscription/index";

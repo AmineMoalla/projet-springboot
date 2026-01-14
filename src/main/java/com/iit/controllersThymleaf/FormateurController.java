@@ -44,7 +44,8 @@ public class FormateurController {
     @PostMapping("/save")
     public String save(@Valid Formateur f,
                        BindingResult br,
-                       @RequestParam(required = false) Long cours) {
+                       @RequestParam(required = false) Long cours,
+                       RedirectAttributes ra) {
         if (br.hasErrors()) return "formateur/form";
        Cours c = null;
         if (cours != null) {
@@ -58,6 +59,7 @@ public class FormateurController {
             c.setFormateur(f);
             coursService.save(c);
         }
+        ra.addFlashAttribute("success", "Formateur créé avec succès!");
         return "redirect:/admin/formateur/index";
     }
 
@@ -77,7 +79,8 @@ public class FormateurController {
     @PostMapping("/update")
     public String update(@Valid Formateur f,
                         BindingResult br,
-                        @RequestParam(required = false) Long cours) {
+                        @RequestParam(required = false) Long cours,
+                        RedirectAttributes ra) {
         if (br.hasErrors()) return "formateur/edit";
         if (cours != null) {
             com.iit.entities.Cours c = coursService.getById(cours).orElse(null);
@@ -86,6 +89,7 @@ public class FormateurController {
             f.setCours(null);
         }
         formateurService.save(f);
+        ra.addFlashAttribute("success", "Formateur mis à jour avec succès!");
         return "redirect:/admin/formateur/index";
     }
 

@@ -15,11 +15,16 @@
 					<p class="text-muted mb-0">Liste de toutes les affectations</p>
 				</div>
 				<div>
-					<a href="/admin/affectation/form" class="btn btn-primary">
+					<a href="/admin/affectation/form" class="btn btn-primary" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 600; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); transition: all 0.3s ease;">
 						<i class="fas fa-plus me-2"></i>Nouvelle affectation
 					</a>
 				</div>
 			</div>
+		</div>
+		<!-- Messages flash -->
+		<div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+			<span th:text="${success}"></span>
+			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
 		</div>
 		<div class="table-container bg-white rounded-3 p-4 shadow-sm">
 			<div class="table-responsive">
@@ -32,6 +37,7 @@
 							<th>Année</th>
 							<th>Semestre</th>
 							<th>Volume Horaire</th>
+	                        <th>Actions</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -54,6 +60,23 @@
 							<td th:text="${affectation.annee}">Année</td>
 							<td th:text="${affectation.semestre}">Semestre</td>
 							<td th:text="${affectation.volumeHoraire}">Volume</td>
+							<td>
+																<div class="d-flex gap-2">
+																	<a th:href="@{'/admin/affectation/edit'(id=${affectation.id})}"
+																		 class="p-2 bg-yellow-100 text-warning rounded-circle hover-bg-yellow-200 transition border-0"
+																		 style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;"
+																		 title="Éditer">
+																		<i class="fas fa-edit"></i>
+																	</a>
+																	<a th:href="@{'/admin/affectation/delete/' + ${affectation.id}}"
+																		 class="p-2 bg-red-100 text-danger rounded-circle hover-bg-red-200 transition border-0"
+																		 style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;"
+																		 title="Supprimer"
+																		 onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette affectation ?');">
+																		<i class="fas fa-trash"></i>
+																	</a>
+																</div>
+							</td>
 						</tr>
 					</tbody>
 				</table>

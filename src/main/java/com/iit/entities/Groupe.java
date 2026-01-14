@@ -30,18 +30,22 @@ public class Groupe {
 
     private int capacite;
 
+    @Enumerated(EnumType.STRING)
+    private Specialite specialite;
+
     
     public Groupe() {}
 
    
 
-    public Groupe( String niveau, String code, List<AffectationCours> affectationsCours, List<Inscription> inscriptions, int capacite) {
+    public Groupe( String niveau, String code, List<AffectationCours> affectationsCours, List<Inscription> inscriptions, int capacite, Specialite specialite) {
         super();        
         this.niveau = niveau;
         this.code = code;
         this.affectationsCours = affectationsCours;
         this.inscriptions = inscriptions;
         this.capacite = capacite;
+        this.specialite = specialite;
     }
    public List<Inscription> getInscriptions() {
         return inscriptions;
@@ -92,4 +96,12 @@ public void setCapacite(int capacite) {
         this.capacite = capacite;
 
    }
+
+    public Specialite getSpecialite() {
+        return specialite;
+    }
+
+    public void setSpecialite(Specialite specialite) {
+        this.specialite = specialite;
+    }
 }

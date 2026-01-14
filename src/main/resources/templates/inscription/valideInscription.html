@@ -63,11 +63,9 @@
             }
         });
 
-        // Ouvre la modal automatiquement si une alerte est présente
-        if (alerte && alerte.textContent.trim() !== "") {
-            var modal = new bootstrap.Modal(document.getElementById('valideInscriptionModal'));
-            modal.show();
-        }
+        // Ouvre la modal automatiquement au chargement de la page
+        var modal = new bootstrap.Modal(document.getElementById('valideInscriptionModal'));
+        modal.show();
     });
     </script>
 </body>

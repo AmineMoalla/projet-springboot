@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 import com.iit.entities.Inscription;
+import com.iit.entities.Specialite;
 import com.iit.repositories.InscriptionRepository;
 import com.iit.services.InscriptionService;
 import com.iit.services.EtudiantService;
@@ -76,6 +77,8 @@ public class InscriptionController {
     @GetMapping("/index")
     public String index(Model model) {
         model.addAttribute("inscriptions", inscriptionService.getAll());
+        model.addAttribute("groupes", groupeService.getAll());
+        model.addAttribute("specialites", Specialite.values());
         return "inscription/index";
     }
 
