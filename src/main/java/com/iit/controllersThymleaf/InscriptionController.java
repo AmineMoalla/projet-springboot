@@ -59,7 +59,7 @@ public class InscriptionController {
             com.iit.entities.Etudiant etudiant = new com.iit.entities.Etudiant();
             etudiant.setNom(inscription.getEtudiant().getNom());
             etudiant.setPrenom(inscription.getEtudiant().getPrenom());
-            etudiant.setEmail(inscription.getEtudiant().getEmail());
+            etudiant.setUser(inscription.getEtudiant().getUser());
             etudiant.setDateInscription(java.time.LocalDate.now());
             etudiant.setInscription(inscription);
             etudiantService.save(etudiant);

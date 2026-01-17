@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.iit.security.ApplicationUser;
 
 @Entity
 public class Etudiant {
@@ -22,8 +23,10 @@ public class Etudiant {
 	private String matricule;
 	private String nom;
 	private String prenom;
-	@Email
-	private String email;
+	@OneToOne
+	@JoinColumn(name = "user_id", nullable = false, unique = true)
+	private ApplicationUser user;
+
 
 	@Column(name = "date_inscription")
 	private LocalDate dateInscription;
@@ -53,7 +56,7 @@ public class Etudiant {
 		this.matricule = matricule;
 		this.nom = nom;
 		this.prenom = prenom;
-		this.email = email;
+		//this.email = email;
 		this.dateInscription = dateInscription;
 		this.inscription = inscription;
 		
@@ -111,14 +114,22 @@ public class Etudiant {
 	public void setPrenom(String prenom) {
 		this.prenom = prenom;
 	}
+	 // getters / setters
+    public ApplicationUser getUser() {
+        return user;
+    }
 
-	public String getEmail() {
+    public void setUser(ApplicationUser user) {
+        this.user = user;
+    }
+
+	/*public String getEmail() {
 		return email;
 	}
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
+	}*/
 
 	public LocalDate getDateInscription() {
 		return dateInscription;
@@ -138,6 +149,6 @@ public class Etudiant {
 	@Override
 	public String toString() {
 		return "Etudiant{" + "matricule='" + matricule + '\'' + ", nom='" + nom + '\'' + ", prenom='" + prenom + '\''
-				+ ", email='" + email + '\'' + ", dateInscription=" + dateInscription + '}';
+				+ ", email='" + '\'' + ", dateInscription=" + dateInscription + '}';
 	}
 }

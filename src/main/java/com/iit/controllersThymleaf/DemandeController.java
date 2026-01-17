@@ -69,11 +69,11 @@ public class DemandeController {
                 etudiantService.save(etudiant);
 
                 // Envoi email
-                if (etudiant.getEmail() != null && !etudiant.getEmail().isEmpty()) {
+                if (etudiant.getUser() != null && !etudiant.getUser().getEmail().isEmpty()) {
                     String subject = "Confirmation d'inscription";
                     String text = "Bonjour " + etudiant.getNom() + ",\nVotre inscription au groupe " + groupe.getCode() + " a été validée.";
                     try {
-                        sendGridEmailService.sendEmail(etudiant.getEmail(), subject, text);
+                        sendGridEmailService.sendEmail(etudiant.getUser().getEmail(), subject, text);
                     } catch (Exception ex) {
                         ex.printStackTrace(); // Affiche l'erreur dans la console
                         System.err.println("Erreur lors de l'envoi de l'email : " + ex.getMessage());

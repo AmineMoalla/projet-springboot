@@ -3,6 +3,8 @@ package com.iit.entities;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.iit.security.ApplicationUser;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -14,7 +16,10 @@ public class Formateur {
 
 	private String nom;
 	private String specialite;
-	private String email;
+	//private String email;
+	@OneToOne
+	@JoinColumn(name = "user_id", nullable = false, unique = true)
+	private ApplicationUser user;
 
 	@OneToOne(mappedBy = "formateur")
 	private Cours cours;
@@ -25,7 +30,7 @@ public class Formateur {
 	public Formateur(String nom, String specialite, String email, Cours cours) {
 		this.nom = nom;
 		this.specialite = specialite;
-		this.email = email;
+		//this.email = email;
 		this.cours = cours;
 	}
 
@@ -61,17 +66,25 @@ public class Formateur {
 		this.specialite = specialite;
 	}
 
-	public String getEmail() {
+	 // getters / setters
+    public ApplicationUser getUser() {
+        return user;
+    }
+
+    public void setUser(ApplicationUser user) {
+        this.user = user;
+    }
+	/*public String getEmail() {
 		return email;
 	}
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
+	}*/
 
 	@Override
 	public String toString() {
 		return "Formateur{" + "id=" + id + ", nom='" + nom + '\'' + ", specialite='" + specialite + '\'' + ", email='"
-				+ email + '\'' + '}';
+				+ '\'' + '}';
 	}
 }
