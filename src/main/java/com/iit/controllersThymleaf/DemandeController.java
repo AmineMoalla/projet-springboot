@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -44,18 +45,32 @@ public class DemandeController {
     private SendGridEmailService sendGridEmailService;
 
     @GetMapping("/index")
-    public String index(Model model) {
+    public String index(@RequestParam(value = "idEtudiant", required = false) Long idEtudiant, Model model) {
         List<Etudiant> etudiantsSansInscription = etudiantService.getAll()
             .stream()
             .filter(e -> e.getInscription() == null)
             .collect(Collectors.toList());
         model.addAttribute("etudiantsSansInscription", etudiantsSansInscription);
-        model.addAttribute("groupes", groupeService.getAll());
+        if (idEtudiant != null) {
+            Etudiant etudiant = etudiantService.getById(idEtudiant).orElse(null);
+            if (etudiant != null && etudiant.getSpecialite() != null) {
+                try {
+                    com.iit.entities.Specialite specialite = com.iit.entities.Specialite.valueOf(etudiant.getSpecialite());
+                    model.addAttribute("groupes", groupeService.getGroupesAvecCapaciteDisponibleParSpecialite(specialite));
+                } catch (Exception ex) {
+                    model.addAttribute("groupes", groupeService.getGroupesAvecCapaciteDisponibleAll());
+                }
+            } else {
+                model.addAttribute("groupes", groupeService.getGroupesAvecCapaciteDisponibleAll());
+            }
+        } else {
+            model.addAttribute("groupes", groupeService.getGroupesAvecCapaciteDisponibleAll());
+        }
         return "Demande/index";
     }
 
     @PostMapping("/valider")
-    public String validerInscription(@RequestParam Long idEtudiant, @RequestParam Long groupeId, Model model) {
+    public String validerInscription(@RequestParam Long idEtudiant, @RequestParam Long groupeId, Model model, RedirectAttributes ra) {
         Etudiant etudiant = etudiantService.getById(idEtudiant).orElse(null);
         Groupe groupe = groupeService.getById(groupeId).orElse(null);
         if (etudiant != null && groupe != null) {
@@ -64,16 +79,31 @@ public class DemandeController {
             inscription.setEtudiant(etudiant);
             inscription.setGroupe(groupe);
             try {
+                // Générer un mot de passe aléatoire
+                String generatedPassword = genererMotDePasse(10);
+                // Encoder le mot de passe
+                org.springframework.security.crypto.password.PasswordEncoder encoder = new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
+                String encodedPassword = encoder.encode(generatedPassword);
+                // Assigner le mot de passe à l'utilisateur
+                if (etudiant.getUser() != null) {
+                    etudiant.getUser().setPassword(encodedPassword);
+                }
                 inscriptionService.save(inscription);
                 etudiant.setInscription(inscription);
                 etudiantService.save(etudiant);
 
-                // Envoi email
+                // Envoi email avec le mot de passe généré
                 if (etudiant.getUser() != null && !etudiant.getUser().getEmail().isEmpty()) {
-                    String subject = "Confirmation d'inscription";
-                    String text = "Bonjour " + etudiant.getNom() + ",\nVotre inscription au groupe " + groupe.getCode() + " a été validée.";
+                    String subject = "Vos identifiants d'accès";
+                    StringBuilder text = new StringBuilder();
+                    text.append("Bonjour,\n\n");
+                    text.append("Vous avez été inscrit dans le groupe : ").append(groupe.getCode()).append("\n\n");
+                    text.append("Voici vos identifiants pour accéder à la plateforme :\n");
+                    text.append("Email : ").append(etudiant.getUser().getEmail()).append("\n");
+                    text.append("Mot de passe : ").append(generatedPassword).append("\n");
+                    text.append("\nMerci de votre confiance.\nL'équipe YFASCHOOL.");
                     try {
-                        sendGridEmailService.sendEmail(etudiant.getUser().getEmail(), subject, text);
+                        sendGridEmailService.sendEmail(etudiant.getUser().getEmail(), subject, text.toString());
                     } catch (Exception ex) {
                         ex.printStackTrace(); // Affiche l'erreur dans la console
                         System.err.println("Erreur lors de l'envoi de l'email : " + ex.getMessage());
@@ -88,13 +118,40 @@ public class DemandeController {
                     LocalDateTime.now()
                 );
                 notificationService.save(notification);
+                ra.addFlashAttribute("success", "Inscription validée avec succès pour " + etudiant.getNom() + " dans le groupe " + groupe.getCode() + "!");
             } catch (RuntimeException e) {
-                model.addAttribute("etudiant", etudiant);
-                model.addAttribute("groupes", groupeService.getAll());
+                List<Etudiant> etudiantsSansInscription = etudiantService.getAll()
+                    .stream()
+                    .filter(et -> et.getInscription() == null)
+                    .collect(Collectors.toList());
+                model.addAttribute("etudiantsSansInscription", etudiantsSansInscription);
+                if (etudiant != null && etudiant.getSpecialite() != null) {
+                    try {
+                        com.iit.entities.Specialite specialite = com.iit.entities.Specialite.valueOf(etudiant.getSpecialite());
+                        model.addAttribute("groupes", groupeService.getGroupesAvecCapaciteDisponibleParSpecialite(specialite));
+                    } catch (Exception ex) {
+                        model.addAttribute("groupes", groupeService.getGroupesAvecCapaciteDisponibleAll());
+                    }
+                } else {
+                    model.addAttribute("groupes", groupeService.getGroupesAvecCapaciteDisponibleAll());
+                }
                 model.addAttribute("alerteCapacite", e.getMessage());
-                return "inscription/valideInscription";
+                model.addAttribute("etudiantErreur", etudiant); // Pour pré-remplir le modal
+                model.addAttribute("groupeErreurId", groupeId); // Pour pré-remplir le groupe sélectionné
+                model.addAttribute("showModal", true);
+                return "Demande/index";
             }
         }
         return "redirect:/admin/inscription/index";
+    }
+    // Génère un mot de passe aléatoire de longueur donnée
+    private String genererMotDePasse(int longueur) {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%";
+        StringBuilder sb = new StringBuilder();
+        java.util.Random random = new java.util.Random();
+        for (int i = 0; i < longueur; i++) {
+            sb.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return sb.toString();
     }
 }

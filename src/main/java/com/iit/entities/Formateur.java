@@ -6,6 +6,8 @@ import java.util.Collection;
 import com.iit.security.ApplicationUser;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Entity
 public class Formateur {
@@ -19,9 +21,11 @@ public class Formateur {
 	//private String email;
 	@OneToOne
 	@JoinColumn(name = "user_id", nullable = false, unique = true)
+	@JsonIgnore
 	private ApplicationUser user;
 
 	@OneToOne(mappedBy = "formateur")
+	@JsonIgnore
 	private Cours cours;
 	
 	public Formateur() {

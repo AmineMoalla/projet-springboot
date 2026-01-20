@@ -11,4 +11,7 @@ public interface InscriptionRepository extends JpaRepository<Inscription, Long> 
 	List<Inscription> findByGroupe_Id(Long groupeId);
 	List<Inscription> findByGroupeIsNull();
     long countByGroupeId(Long groupeId);
+
+
+	
 }

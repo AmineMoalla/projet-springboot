@@ -1,3 +1,4 @@
+
 package com.iit.services;
 
 import com.iit.entities.Groupe;
@@ -35,4 +36,26 @@ public class GroupeService {
     public boolean existsById(Long id) {
         return repository.existsById(id);
     }
+
+
+      public List<Groupe> getBySpecialite(com.iit.entities.Specialite specialite) {
+        return repository.findBySpecialite(specialite);
+    }
+
+
+
+        public List<Groupe> getGroupesAvecCapaciteDisponible(List<Groupe> groupes) {
+        return groupes.stream()
+                .filter(g -> g.getInscriptions() != null && g.getInscriptions().size() < g.getCapacite())
+                .toList();
+    }
+
+    public List<Groupe> getGroupesAvecCapaciteDisponibleParSpecialite(com.iit.entities.Specialite specialite) {
+        return getGroupesAvecCapaciteDisponible(getBySpecialite(specialite));
+    }
+
+    public List<Groupe> getGroupesAvecCapaciteDisponibleAll() {
+        return getGroupesAvecCapaciteDisponible(getAll());
+    }
+  
 }

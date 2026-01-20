@@ -23,6 +23,7 @@ public class Etudiant {
 	private String matricule;
 	private String nom;
 	private String prenom;
+	private String specialite;
 	@OneToOne
 	@JoinColumn(name = "user_id", nullable = false, unique = true)
 	private ApplicationUser user;
@@ -52,13 +53,14 @@ public class Etudiant {
 	public Etudiant() {
 	}
 
-	public Etudiant(String matricule, String nom, String prenom, String email, LocalDate dateInscription, Inscription inscription) {
+	public Etudiant(String matricule, String nom, String prenom, String email, LocalDate dateInscription, Inscription inscription, String specialite) {
 		this.matricule = matricule;
 		this.nom = nom;
 		this.prenom = prenom;
 		//this.email = email;
 		this.dateInscription = dateInscription;
 		this.inscription = inscription;
+		this.specialite = specialite;
 		
 	}
 
@@ -146,9 +148,34 @@ public class Etudiant {
 	 * = coursInscrits; }
 	 */
 
+
+	public String getSpecialite() {
+		return specialite;
+	}
+
+
+	public void setSpecialite(String specialite) {
+		this.specialite = specialite;
+	}
 	@Override
 	public String toString() {
 		return "Etudiant{" + "matricule='" + matricule + '\'' + ", nom='" + nom + '\'' + ", prenom='" + prenom + '\''
 				+ ", email='" + '\'' + ", dateInscription=" + dateInscription + '}';
 	}
+
+	// Retourne la liste des cours de l'étudiant via son inscription/groupe
+    public List<Cours> getCoursList() {
+        List<Cours> coursList = new ArrayList<>();
+        if (inscription != null && inscription.getGroupe() != null) {
+            Groupe groupe = inscription.getGroupe();
+            if (groupe.getAffectationsCours() != null) {
+                for (AffectationCours ac : groupe.getAffectationsCours()) {
+                    if (ac.getCours() != null) {
+                        coursList.add(ac.getCours());
+                    }
+                }
+            }
+        }
+        return coursList;
+    }
 }

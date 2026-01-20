@@ -1,9 +1,8 @@
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="layout/header :: common-head"></head>
+<head th:replace="~{layout/header :: common-head}"></head>
 <body>
-    <div th:replace="layout/navbar :: sidebar"></div>
+    <div th:replace="~{layout/navbar :: sidebar}"></div>
     <div id="content" style="margin-left:260px; padding:1.5rem; min-height:100vh;">
         <div class="content-header bg-white rounded-3 p-4 mb-4 shadow-sm">
             <h1 class="h3 mb-2">
@@ -26,12 +25,12 @@
                         <tr th:each="etudiant : ${etudiantsSansInscription}">
                             <td th:text="${etudiant.nom}"></td>
                             <td th:text="${etudiant.prenom}"></td>
-                            <td th:text="${etudiant.email}"></td>
+                            <td th:text="${etudiant.user.email}"></td>
                             <td>
                                 <button type="button" class="btn btn-success btn-sm" 
                                     data-bs-toggle="modal" 
                                     data-bs-target="#valideInscriptionModal"
-                                    th:attr="data-id=${etudiant.id},data-nom=${etudiant.nom},data-prenom=${etudiant.prenom},data-email=${etudiant.email}">
+                                    th:attr="data-id=${etudiant.id},data-nom=${etudiant.nom},data-prenom=${etudiant.prenom},data-email=${etudiant.user.email},data-specialite=${etudiant.specialite}">
                                     Valider
                                 </button>
                             </td>
@@ -41,7 +40,7 @@
             </div>
         </div>
     </div>
-    <div th:replace="layout/footer :: footer"></div>
+    <div th:replace="~{layout/footer :: footer}"></div>
     <!-- Modal pour validation d'inscription -->
     <div class="modal fade" id="valideInscriptionModal" tabindex="-1" aria-labelledby="valideInscriptionLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -54,19 +53,25 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <label class="form-label">Nom de l'étudiant</label>
-                            <input type="text" class="form-control" id="modalEtudiantNom" readonly>
+                            <input type="text" class="form-control" id="modalEtudiantNom" readonly th:value="${etudiantErreur != null} ? ${etudiantErreur.nom} : ''">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Prénom de l'étudiant</label>
-                            <input type="text" class="form-control" id="modalEtudiantPrenom" readonly>
+                            <input type="text" class="form-control" id="modalEtudiantPrenom" readonly th:value="${etudiantErreur != null} ? ${etudiantErreur.prenom} : ''">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Groupe</label>
                             <select class="form-select" id="modalGroupeId" name="groupeId" required>
-                                <option th:each="groupe : ${groupes}" th:value="${groupe.id}" th:text="${groupe.code}"></option>
+                                <option th:each="groupe : ${groupes}"
+                                        th:value="${groupe.id}"
+                                        th:text="${groupe.code}"
+                                        th:attr="data-specialite=${groupe.specialite}"
+                                        th:selected="${groupeErreurId != null} ? (${groupe.id} == ${groupeErreurId}) : false">
+                                </option>
                             </select>
+                            <div id="alerteCapacite" th:if="${alerteCapacite}" class="alert alert-danger mt-2" th:text="'Erreur : La capacité maximale de ce groupe est atteinte. Veuillez choisir un autre groupe.'" th:style="'display:' + (${alerteCapacite} != null ? 'block' : 'none')"></div>
                         </div>
-                        <input type="hidden" name="idEtudiant" id="modalEtudiantId" />
+                        <input type="hidden" name="idEtudiant" id="modalEtudiantId" th:value="${etudiantErreur != null} ? ${etudiantErreur.id} : ''" />
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
@@ -80,16 +85,45 @@
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         var modal = document.getElementById('valideInscriptionModal');
+        var groupeSelect = document.getElementById('modalGroupeId');
+        var alerteDiv = document.getElementById('alerteCapacite');
+        // Sauvegarde toutes les options initiales
+        var allOptions = Array.from(groupeSelect.options).map(function(opt) {
+            return {value: opt.value, text: opt.text, specialite: opt.getAttribute('data-specialite')};
+        });
         modal.addEventListener('show.bs.modal', function (event) {
             var button = event.relatedTarget;
-            var id = button.getAttribute('data-id');
-            var nom = button.getAttribute('data-nom');
-            var prenom = button.getAttribute('data-prenom');
+            var id = button ? button.getAttribute('data-id') : '';
+            var nom = button ? button.getAttribute('data-nom') : '';
+            var prenom = button ? button.getAttribute('data-prenom') : '';
+            var specialite = button ? button.getAttribute('data-specialite') : '';
             // Remplir les champs du modal
             document.getElementById('modalEtudiantId').value = id;
             document.getElementById('modalEtudiantNom').value = nom;
             document.getElementById('modalEtudiantPrenom').value = prenom;
+            // Filtrer les groupes selon la spécialité
+            groupeSelect.innerHTML = '';
+            allOptions.forEach(function(opt) {
+                if (!specialite || opt.specialite === specialite) {
+                    var option = document.createElement('option');
+                    option.value = opt.value;
+                    option.text = opt.text;
+                    option.setAttribute('data-specialite', opt.specialite);
+                    groupeSelect.appendChild(option);
+                }
+            });
+            // Afficher l'alerte si elle existe
+            if (alerteDiv && alerteDiv.textContent.trim() !== "") {
+                alerteDiv.style.display = 'block';
+            } else if (alerteDiv) {
+                alerteDiv.style.display = 'none';
+            }
         });
+        // Ouvre automatiquement la modale si une erreur de capacité est présente
+        if (alerteDiv && alerteDiv.textContent.trim() !== "") {
+            var bsModal = new bootstrap.Modal(modal);
+            bsModal.show();
+        }
     });
     </script>
 </body>

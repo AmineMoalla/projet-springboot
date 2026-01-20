@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 import com.iit.entities.Inscription;
+import com.iit.entities.Specialite;
 import com.iit.repositories.InscriptionRepository;
 import com.iit.services.InscriptionService;
 import com.iit.services.EtudiantService;
@@ -76,6 +77,8 @@ public class InscriptionController {
     @GetMapping("/index")
     public String index(Model model) {
         model.addAttribute("inscriptions", inscriptionService.getAll());
+        model.addAttribute("groupes", groupeService.getAll());
+        model.addAttribute("specialites", Specialite.values());
         return "inscription/index";
     }
 
@@ -87,13 +90,28 @@ public class InscriptionController {
 
         @PostMapping("/inscrire")
     public String inscrire(@Valid Inscription i, BindingResult br, Model model) {
-        if (br.hasErrors()) return "inscription/valideInscription";
+        com.iit.entities.Etudiant etudiant = i.getEtudiant();
+        java.util.List<com.iit.entities.Groupe> groupes = new java.util.ArrayList<>();
+        if (etudiant != null && etudiant.getSpecialite() != null) {
+            try {
+                com.iit.entities.Specialite specialite = com.iit.entities.Specialite.valueOf(etudiant.getSpecialite());
+                groupes = groupeService.getBySpecialite(specialite);
+            } catch (Exception ex) {
+                // fallback: aucun groupe
+            }
+        }
+        if (br.hasErrors()) {
+            model.addAttribute("groupes", groupes);
+            model.addAttribute("etudiant", etudiant);
+            return "inscription/valideInscription";
+        }
         try {
             inscriptionService.inscrireEtudiant(i);
         } catch (RuntimeException e) {
             model.addAttribute("alerteCapacite", e.getMessage());
             model.addAttribute("inscription", i);
-            model.addAttribute("groupes", groupeService.getAll());
+            model.addAttribute("groupes", groupes);
+            model.addAttribute("etudiant", etudiant);
             return "inscription/valideInscription";
         }
         return "confirmation";

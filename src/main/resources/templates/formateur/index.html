@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Formateurs - IIT School</title>
+    <title>Gestion des Formateurs</title>
     <head th:replace="layout/header :: common-head"></head>
 </head>
 <body>
@@ -18,9 +18,9 @@
                     <p class="text-muted mb-0">Liste de tous les formateurs</p>
                 </div>
                 <div>
-                    <a href="/admin/formateur/form" class="btn btn-primary">
-                        <i class="fas fa-plus me-2"></i>Nouveau formateur
-                    </a>
+                    <a href="/admin/formateur/form" class="btn btn-primary" style="background: linear-gradient(90deg, #1976d2 0%, #42a5f5 100%); color: #fff; border-radius: 30px; padding: 10px 28px; font-weight: 600; box-shadow: 0 2px 8px rgba(25,118,210,0.15); transition: background 0.3s; border: none;">
+                                <i class="fas fa-plus me-2"></i>Nouveau formateur
+                            </a>
                 </div>
             </div>
         </div>
@@ -55,9 +55,7 @@
                                     <i class="fas fa-chalkboard-teacher fa-3x text-secondary mb-3"></i>
                                     <h4 class="text-muted">Aucun formateur disponible</h4>
                                     <p class="text-muted mb-3">Commencez par créer votre premier formateur</p>
-                                    <a href="/admin/formateur/form" class="btn btn-primary">
-                                        <i class="fas fa-plus me-2"></i>Créer un formateur
-                                    </a>
+                                   
                                 </div>
                             </td>
                         </tr>
@@ -65,21 +63,22 @@
                         <tr th:each="formateur : ${formateurs}" th:if="${formateur.id != null}">
                             <td th:text="${formateur.id}"></td>
                             <td><strong th:text="${formateur.nom}"></strong></td>
-                            <td th:text="${formateur.email}"></td>
+                            <td th:text="${formateur.user.email}"></td>
                             <td th:text="${formateur.specialite}"></td>
                             <td th:text="${formateur.cours != null ? formateur.cours.nom : 'Non attribué'}"></td>
                             <td>
-                                <div class="d-flex">
-                                    <a th:href="@{'/admin/formateur/edit/' + ${formateur.id}}"
-                                       class="btn-action btn-edit"
-                                       title="Modifier">
+                                <div style="display: flex; gap: 8px;">
+                                    <a th:href="@{'/admin/formateur/edit/' + ${formateur.id}}" title="Éditer"
+                                       style="background: #fef3c7; color: #ca8a04; border-radius: 9999px; transition: background 0.2s; display: inline-flex; align-items: center; border: none; padding: 8px; font-size: 18px;"
+                                       onmouseover="this.style.background='#fde68a'" onmouseout="this.style.background='#fef3c7'">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <form th:action="@{'/admin/formateur/delete/' + ${formateur.id}}" method="get" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce formateur ?')">
-                                        <button type="submit" class="btn-action btn-delete" title="Supprimer">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
+                                    <!-- <a th:href="@{'/admin/formateur/delete/' + ${formateur.id}}" title="Supprimer"
+                                       style="background: #fee2e2; color: #dc2626; border-radius: 9999px; transition: background 0.2s; display: inline-flex; align-items: center; border: none; padding: 8px; font-size: 18px;"
+                                       onmouseover="this.style.background='#fecaca'" onmouseout="this.style.background='#fee2e2'"
+                                       onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce formateur ?');">
+                                        <i class="fas fa-trash"></i>
+                                    </a> -->
                                 </div>
                             </td>
                         </tr>

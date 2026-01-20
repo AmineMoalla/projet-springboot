@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulaire Formateur - IIT School</title>
-    <head th:replace="layout/header :: common-head"></head>
+    <title>Formulaire Formateur </title>
+    <th:block th:replace="layout/header :: common-head"></th:block>
 </head>
 <body>
     <div th:replace="layout/navbar :: sidebar"></div>
@@ -33,9 +33,12 @@
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label">Email *</label>
-                    <input type="email" id="email" th:field="*{email}" class="form-control" required />
-                    <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                    <input type="email" id="email" name="email" class="form-control" required />
                 </div>
+                <!-- <div class="mb-3">
+                    <label for="password" class="form-label">Mot de passe *</label>
+                    <input type="password" id="password" name="password" class="form-control" required />
+                </div> -->
                 <div class="mb-3">
                     <label for="specialite" class="form-label">Spécialité *</label>
                     <input type="text" id="specialite" th:field="*{specialite}" class="form-control" required />

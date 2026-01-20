@@ -15,9 +15,9 @@
 					<p class="text-muted mb-0">Liste de toutes les affectations</p>
 				</div>
 				<div>
-					<a href="/admin/affectation/form" class="btn btn-primary">
-						<i class="fas fa-plus me-2"></i>Nouvelle affectation
-					</a>
+					 <a href="/admin/affectation/form" class="btn btn-primary" style="background: linear-gradient(90deg, #1976d2 0%, #42a5f5 100%); color: #fff; border-radius: 30px; padding: 10px 28px; font-weight: 600; box-shadow: 0 2px 8px rgba(25,118,210,0.15); transition: background 0.3s; border: none;">
+                                <i class="fas fa-plus me-2"></i>Nouvelle affectation
+                            </a>
 				</div>
 			</div>
 		</div>
@@ -32,6 +32,8 @@
 							<th>Année</th>
 							<th>Semestre</th>
 							<th>Volume Horaire</th>
+							
+							<th>Actions</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -41,19 +43,31 @@
 									<i class="fas fa-link fa-3x text-secondary mb-3"></i>
 									<h4 class="text-muted">Aucune affectation disponible</h4>
 									<p class="text-muted mb-3">Commencez par créer une affectation</p>
-									<a href="/admin/affectation/form" class="btn btn-primary">
-										<i class="fas fa-plus me-2"></i>Créer une affectation
-									</a>
+									
 								</div>
 							</td>
 						</tr>
 						<tr th:each="affectation,iter : ${affectationList}">
-							<td th:text="${iter.count}">1</td>
-							<td th:text="${affectation.groupe != null ? affectation.groupe.code : 'N/A'}">Groupe</td>
-							<td th:text="${affectation.cours != null ? affectation.cours.nom : 'N/A'}">Cours</td>
-							<td th:text="${affectation.annee}">Année</td>
-							<td th:text="${affectation.semestre}">Semestre</td>
-							<td th:text="${affectation.volumeHoraire}">Volume</td>
+								<td th:text="${iter.count}">1</td>
+								<td th:text="${affectation.groupe != null ? affectation.groupe.code : 'N/A'}">Groupe</td>
+								<td th:text="${affectation.cours != null ? affectation.cours.nom : 'N/A'}">Cours</td>
+								<td th:text="${affectation.annee}">Année</td>
+								<td th:text="${affectation.semestre}">Semestre</td>
+								<td th:text="${affectation.volumeHoraire}">Volume</td>
+								<td>
+									<div style="display: flex; gap: 8px;">
+										  <a th:href="@{'/admin/affectation/edit?id=' + ${affectation.id}}" title="Éditer"
+											  class="p-2 bg-yellow-100 text-yellow-600 rounded-full hover:bg-yellow-200 transition" style="background: #fef3c7; color: #ca8a04; border-radius: 9999px; transition: background 0.2s; display: inline-flex; align-items: center; border: none;">
+											<i class="fas fa-edit"></i>
+										</a>
+										<a th:href="@{'/admin/affectation/delete/' + ${affectation.id}}" title="Supprimer"
+											 class="p-2 bg-red-100 text-red-600 rounded-full hover:bg-red-200 transition"
+											 style="background: #fee2e2; color: #dc2626; border-radius: 9999px; transition: background 0.2s; display: inline-flex; align-items: center; border: none;"
+											 onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette affectation ?');">
+											<i class="fas fa-trash"></i>
+										</a>
+									</div>
+								</td>
 						</tr>
 					</tbody>
 				</table>

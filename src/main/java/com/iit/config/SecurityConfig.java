@@ -34,16 +34,32 @@ public class SecurityConfig {
         return provider;
     }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .anyRequest().authenticated()
-                );
-        return http.build();
-    }
-    
+    // @Bean
+    // public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    //     http.csrf().disable()
+    //         .authorizeHttpRequests(auth -> auth
+    //             .requestMatchers("/api/auth/**").permitAll()
+    //             .requestMatchers("/admin/**").permitAll()
+    //             .requestMatchers("/admin/demande/**").permitAll()
+    //             .requestMatchers("/admin/formateur/**").hasRole("ADMIN")
+    //             //.requestMatchers("/admin/**").authenticated()
+    //             .anyRequest().authenticated()
+    //         );
+    //     return http.build();
+    // }
+
+
+      @Bean
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http.csrf().disable()
+        .authorizeHttpRequests(auth -> auth
+            .anyRequest().permitAll()
+        );
+
+    return http.build();
+}
+
+
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         return http.getSharedObject(AuthenticationManagerBuilder.class)

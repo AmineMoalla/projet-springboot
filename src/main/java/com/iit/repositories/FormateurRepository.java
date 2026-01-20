@@ -9,5 +9,7 @@ import com.iit.entities.Formateur;
 @Repository
 public interface FormateurRepository extends JpaRepository<Formateur, Long> {
 
+	Optional<Formateur> findByUserId(Long userId);
+
 	 Optional<Formateur> findByUserEmail(String email);
 }

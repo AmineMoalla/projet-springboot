@@ -36,20 +36,46 @@ public class AuthenticationService {
     }
 
     // ---------------- LOGIN ----------------
-    public String login(LoginRequest request) {
+    // public String login(LoginRequest request) {
 
-        ApplicationUser user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+    //     ApplicationUser user = userRepository.findByEmail(request.getEmail())
+    //             .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Mot de passe incorrect");
-        }
+    //     if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+    //         throw new RuntimeException("Mot de passe incorrect");
+    //     }
 
-        return jwtService.generateToken(
-                user.getEmail(),
-                user.getRole().name()
-        );
+    //     return jwtService.generateToken(user.getEmail(), user.getId(), user.getRole());
+    // }
+public String login(LoginRequest request) {
+    ApplicationUser user = userRepository.findByEmail(request.getEmail())
+            .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+
+    if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+        throw new RuntimeException("Mot de passe incorrect");
     }
+
+    Long realId = null;
+
+    switch (user.getRole()) {
+        case ETUDIANT:
+            Etudiant etudiant = etudiantRepository.findByUserId(user.getId())
+                    .orElseThrow(() -> new RuntimeException("Étudiant non trouvé"));
+            realId = etudiant.getId();
+            break;
+        case FORMATEUR:
+            Formateur formateur = formateurRepository.findByUserId(user.getId())
+                    .orElseThrow(() -> new RuntimeException("Formateur non trouvé"));
+            realId = formateur.getId();
+            break;
+        case ADMIN:
+            realId = user.getId(); // pour admin on garde l'id user
+            break;
+    }
+return jwtService.generateToken(user);
+
+    // return jwtService.generateToken(user.getEmail(), user.getId(), user.getRole(), realId);
+}
 
     // ---------------- REGISTER ----------------
     public void register(RegisterRequest request) {

@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modifier Formateur - IIT School</title>
-    <head th:replace="layout/header :: common-head"></head>
+    <title>Formulaire Formateur </title>
+    <th:block th:replace="layout/header :: common-head"></th:block>
 </head>
 <body>
     <div th:replace="layout/navbar :: sidebar"></div>
@@ -23,7 +23,7 @@
             </div>
         </div>
         <div class="form-container bg-white rounded-3 p-4 shadow-sm mt-4" style="max-width:600px;margin:0 auto;">
-            <form th:action="@{/admin/formateur/save}" th:object="${formateur}" method="post" class="needs-validation" novalidate>
+            <form th:action="@{/admin/formateur/update}" th:object="${formateur}" method="post" class="needs-validation" novalidate>
                 <input type="hidden" th:field="*{id}" />
                 <div class="mb-3">
                     <label for="nom" class="form-label">Nom *</label>
@@ -32,8 +32,9 @@
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label">Email *</label>
-                    <input type="email" id="email" th:field="*{email}" class="form-control" required />
-                    <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                    <input type="email" id="email" th:value="${formateur.user != null ? formateur.user.email : ''}" class="form-control" required readonly />
+                    <input type="hidden" name="email" th:value="${formateur.user != null ? formateur.user.email : ''}" />
+                    <input type="hidden" name="userId" th:value="${formateur.user != null ? formateur.user.id : ''}" />
                 </div>
                 <div class="mb-3">
                     <label for="specialite" class="form-label">Spécialité *</label>
@@ -55,7 +56,8 @@
                         <i class="fas fa-redo me-2"></i>Réinitialiser
                     </button>
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-2"></i>Mettre à jour
+                        <i class="fas fa-save me-2"></i>
+                        <span th:text="${formateur.id != null} ? 'Mettre à jour' : 'Créer le formateur'">Mettre à jour</span>
                     </button>
                 </div>
             </form>

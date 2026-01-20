@@ -28,6 +28,7 @@ public class Cours {
 
 	@OneToOne()
 	@JoinColumn(name = "formateur_id")
+	
 	private Formateur formateur;
 
 	public Cours() {

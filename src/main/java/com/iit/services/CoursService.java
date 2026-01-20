@@ -35,4 +35,9 @@ public class CoursService {
     public boolean existsById(Long id) {
         return repository.existsById(id);
     }
+
+    public List<Cours> findByFormateurId(Long formateurId) {
+    return repository.findByFormateurId(formateurId);
+}
+
 }

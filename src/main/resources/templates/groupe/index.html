@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Groupes - IIT School</title>
+    <title>Gestion des Groupes </title>
     <head th:replace="layout/header :: common-head"></head>
 </head>
 <body>
@@ -18,9 +18,9 @@
                     <p class="text-muted mb-0">Liste de tous les groupes</p>
                 </div>
                 <div>
-                    <a href="/admin/groupe/new" class="btn btn-primary">
-                        <i class="fas fa-plus me-2"></i>Nouveau groupe
-                    </a>
+                     <a href="/admin/groupe/new" class="btn btn-primary" style="background: linear-gradient(90deg, #1976d2 0%, #42a5f5 100%); color: #fff; border-radius: 30px; padding: 10px 28px; font-weight: 600; box-shadow: 0 2px 8px rgba(25,118,210,0.15); transition: background 0.3s; border: none;">
+                                <i class="fas fa-plus me-2"></i>Nouveau groupe
+                            </a>
                 </div>
             </div>
         </div>
@@ -39,6 +39,7 @@
                             <th>Code du groupe</th>
                             <th>Niveau</th>
                             <th>Capacité</th>
+                            <th>Spécialité</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -50,9 +51,7 @@
                                     <i class="fas fa-users fa-3x text-secondary mb-3"></i>
                                     <h4 class="text-muted">Aucun groupe disponible</h4>
                                     <p class="text-muted mb-3">Commencez par créer votre premier groupe</p>
-                                    <a href="/admin/groupe/new" class="btn btn-primary">
-                                        <i class="fas fa-plus me-2"></i>Créer un groupe
-                                    </a>
+                                    
                                 </div>
                             </td>
                         </tr>
@@ -62,19 +61,20 @@
                             <td th:text="${groupe.code}">Code</td>
                             <td th:text="${groupe.niveau}">Niveau</td>
                             <td th:text="${groupe.capacite}">Capacité</td>
+                            <td th:text="${groupe.specialite}">Spécialité</td>
                             <td>
-                                <div class="d-flex">
-                                    <!-- Bouton Éditer -->
-                                    <a th:href="@{'/admin/groupe/edit/' + ${groupe.id}}" class="btn-action btn-edit" title="Modifier">
+                                <div style="display: flex; gap: 8px;">
+                                    <a th:href="@{'/admin/groupe/edit/' + ${groupe.id}}" title="Éditer"
+                                       style="background: #fef3c7; color: #ca8a04; border-radius: 9999px; transition: background 0.2s; display: inline-flex; align-items: center; border: none; padding: 8px; font-size: 18px;"
+                                       onmouseover="this.style.background='#fde68a'" onmouseout="this.style.background='#fef3c7'">
                                         <i class="fas fa-edit"></i>
-                                    <!-- <tr>
-                                        <th>ID</th>
-                                        <th>Code du groupe</th>
-                                        <th>Niveau</th>
-                                        <th>Capacité</th>
-                                        <th>Actions</th>
-                                    </tr> -->
-                                    </form>
+                                    </a>
+                                    <a th:href="@{'/admin/groupe/delete/' + ${groupe.id}}" title="Supprimer"
+                                       style="background: #fee2e2; color: #dc2626; border-radius: 9999px; transition: background 0.2s; display: inline-flex; align-items: center; border: none; padding: 8px; font-size: 18px;"
+                                       onmouseover="this.style.background='#fecaca'" onmouseout="this.style.background='#fee2e2'"
+                                       onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce groupe ?');">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
                                 </div>
                             </td>
                         </tr>

@@ -31,10 +31,19 @@
                th:value="${groupe.code}" required>
     </div>
 
+
     <div class="mb-3">
         <label for="niveau" class="form-label">Niveau *</label>
         <input type="text" class="form-control" id="niveau" name="niveau"
                th:value="${groupe.niveau}" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="specialite" class="form-label">Spécialité *</label>
+        <select class="form-control" id="specialite" name="specialite" required>
+            <option value="" disabled selected>Choisir une spécialité</option>
+            <option th:each="spec : ${specialites}" th:value="${spec}" th:text="${spec}" th:selected="${groupe.specialite} == ${spec}"></option>
+        </select>
     </div>
 
     <div class="mb-3">
